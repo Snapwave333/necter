@@ -61,7 +61,7 @@ asarUnpack:
   - node_modules/utf-8-validate/**/*.node
 
 win:
-  icon: resources/icon.ico
+  icon: resources/icon.png  # 1024px PNG — electron-builder auto-generates .ico on Windows
   target:
     - target: nsis
       arch:
@@ -159,5 +159,5 @@ extraMetadata:
 
 publish:
   provider: github
-  owner: NecterAI
+  owner: Snapwave333
   repo: necter
