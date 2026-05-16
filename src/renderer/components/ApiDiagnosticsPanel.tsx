@@ -228,8 +228,8 @@ export default function ApiDiagnosticsPanel({
             <Stethoscope className="w-4 h-4" />
           )}
           {onRunDeepDiagnostics
-            ? t('api.diagnostic.runQuickDiagnostics', 'Quick Diagnose')
-            : t('api.diagnostic.runDiagnostics', 'Diagnose Connection')}
+            ? t('api.diagnostic.runQuickDiagnostics')
+            : t('api.diagnostic.runDiagnostics')}
         </button>
         {onRunDeepDiagnostics && (
           <button
@@ -242,7 +242,7 @@ export default function ApiDiagnosticsPanel({
               transition-colors"
           >
             <Cpu className="w-4 h-4" />
-            {t('api.diagnostic.runDeepDiagnostics', 'Deep Inference Check')}
+            {t('api.diagnostic.runDeepDiagnostics')}
           </button>
         )}
       </div>
@@ -277,7 +277,7 @@ export default function ApiDiagnosticsPanel({
           {/* Skipped info */}
           {result?.skippedReason && !isRunning && (
             <div className="mt-3 pt-3 border-t border-border text-sm text-text-muted">
-              {t('api.diagnostic.skipped', 'Diagnostics skipped: another run is already in progress.')}
+              {t('api.diagnostic.skipped')}
             </div>
           )}
 

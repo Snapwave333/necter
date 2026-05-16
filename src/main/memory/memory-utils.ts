@@ -212,31 +212,90 @@ export function simpleTokenize(text: string): string[] {
   );
 }
 
+/**
+ * Improved lexical scoring with three bonuses over the naive Jaccard-overlap approach:
+ *
+ * 1. Position bonus — earlier token matches count more (recency bias).
+ * 2. IDF bonus — rarer tokens (appearing across few documents) score higher than common ones.
+ * 3. Phrase bonus — if all query tokens appear in order in the text, the score is boosted.
+ *
+ * The final score is the weighted combination of these signals, normalized to [0, 1].
+ */
 export function lexicalScore(query: string, text: string): number {
-  const queryTerms = new Map<string, number>();
-  for (const token of simpleTokenize(query)) {
-    queryTerms.set(token, (queryTerms.get(token) || 0) + 1);
-  }
-  const itemTerms = new Map<string, number>();
-  for (const token of simpleTokenize(text)) {
-    itemTerms.set(token, (itemTerms.get(token) || 0) + 1);
-  }
-  if (!queryTerms.size || !itemTerms.size) {
+  const queryTokens = simpleTokenize(query);
+  const textTokens = simpleTokenize(text);
+
+  if (!queryTokens.length || !textTokens.length) {
     return 0;
   }
-  let overlap = 0;
-  let queryCount = 0;
-  let itemCount = 0;
-  for (const value of queryTerms.values()) {
-    queryCount += value;
+
+  // ── 1. Raw token overlap with IDF weighting ──────────────────────────────────
+  const docFreq = new Map<string, number>();
+  for (const tok of queryTokens) docFreq.set(tok, (docFreq.get(tok) || 0) + 1);
+  for (const tok of textTokens) docFreq.set(tok, (docFreq.get(tok) || 0) + 1);
+  const numDocs = 2; // approximation; IDF is relative within a single search pass
+
+  let weightedOverlap = 0;
+  let maxPossibleWeight = 0;
+  for (const tok of queryTokens) {
+    // IDF: log((numDocs + 1) / (df + 1)) + 1 — rarer terms get higher weight
+    const df = docFreq.get(tok) || 1;
+    const idf = Math.log((numDocs + 1) / (df + 1)) + 1;
+    const weight = idf;
+    maxPossibleWeight += weight;
+    if (textTokens.includes(tok)) {
+      weightedOverlap += weight;
+    }
   }
-  for (const value of itemTerms.values()) {
-    itemCount += value;
+
+  const tfScore = maxPossibleWeight > 0 ? weightedOverlap / maxPossibleWeight : 0;
+
+  // ── 2. Position bonus — earlier occurrences score higher ────────────────────
+  let positionBonus = 0;
+  let positionsFound = 0;
+  for (const tok of queryTokens) {
+    const idx = textTokens.indexOf(tok);
+    if (idx >= 0) {
+      // Linear decay: first token = 1.0, last = ~0.1
+      positionsFound++;
+      positionBonus += 1 / (idx + 1);
+    }
   }
-  for (const [term, count] of queryTerms.entries()) {
-    overlap += Math.min(count, itemTerms.get(term) || 0);
+  const avgPositionScore = positionsFound > 0 ? positionBonus / positionsFound : 0;
+  // Normalise position bonus to [0, 0.15] range
+  const positionComponent = Math.min(avgPositionScore * 0.15, 0.15);
+
+  // ── 3. Phrase bonus — all query tokens appear in order ──────────────────────
+  let phraseBonus = 0;
+  if (positionsFound === queryTokens.length) {
+    // Build position index for text tokens
+    const posIndex = new Map<string, number[]>();
+    for (let i = 0; i < textTokens.length; i++) {
+      const tok = textTokens[i];
+      if (!posIndex.has(tok)) posIndex.set(tok, []);
+      posIndex.get(tok)!.push(i);
+    }
+    // Check if query tokens can be found in order (greedy)
+    let expectedPos = -1;
+    let phraseMatches = true;
+    for (const tok of queryTokens) {
+      const positions = posIndex.get(tok) || [];
+      // Find first occurrence at or after expectedPos
+      const nextPos = positions.find((p) => p > expectedPos);
+      if (nextPos === undefined) {
+        phraseMatches = false;
+        break;
+      }
+      expectedPos = nextPos;
+    }
+    if (phraseMatches) {
+      phraseBonus = 0.2;
+    }
   }
-  return overlap / Math.sqrt(queryCount * Math.max(itemCount, 1));
+
+  // ── Combine ────────────────────────────────────────────────────────────────
+  const score = Math.min(tfScore + positionComponent + phraseBonus, 1);
+  return score;
 }
 
 export function cosineSimilarity(vecA: number[], vecB: number[]): number {

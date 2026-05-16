@@ -14,7 +14,13 @@ import { useAppStore } from '../store';
 import { useIPC } from '../hooks/useIPC';
 import { MessageCard } from './MessageCard';
 import type { Message, ContentBlock } from '../types';
-import { Send, Square, Plus, Loader2, Plug, X, Clock } from 'lucide-react';
+import { Send, Square, Loader2, Plug, X, Clock, Paperclip } from 'lucide-react';
+import nectarIconWhite from '../assets/nectar-icon-white.png';
+import nectarIconBlack from '../assets/nectar-icon-black.png';
+import { VoiceButton } from './VoiceButton';
+import { OrbCanvas } from './OrbCanvas';
+import { useOrb } from '../hooks/useOrb';
+import { MuteControls } from './MuteControls';
 
 type AttachedFile = {
   name: string;
@@ -35,6 +41,9 @@ export function ChatView() {
   const pendingTurns = usePendingTurns();
   const executionClock = useActiveExecutionClock();
   const appConfig = useAppConfig();
+  const settings = useAppStore((s) => s.settings);
+  const systemDarkMode = useAppStore((s) => s.systemDarkMode);
+  const isLight = settings.theme === 'light' || (settings.theme === 'system' && !systemDarkMode);
   const setGlobalNotice = useAppStore((s) => s.setGlobalNotice);
   const { continueSession, stopSession, isElectron } = useIPC();
   const [prompt, setPrompt] = useState('');
@@ -51,6 +60,27 @@ export function ChatView() {
   >([]);
   const [attachedFiles, setAttachedFiles] = useState<AttachedFile[]>([]);
   const [isDragging, setIsDragging] = useState(false);
+
+  // Mute state backed by the settings store — synced to disk on toggle
+  const ttsMuted = useAppStore((s) => s.settings.ttsMuted);
+  const micMuted = useAppStore((s) => s.settings.micMuted);
+  const updateSettings = useAppStore((s) => s.updateSettings);
+
+  const handleMicToggle = useCallback(
+    () => updateSettings({ micMuted: !micMuted }),
+    [updateSettings, micMuted]
+  );
+  const handleTtsToggle = useCallback(
+    () => updateSettings({ ttsMuted: !ttsMuted }),
+    [updateSettings, ttsMuted]
+  );
+
+  // orbState is fed by the shared ttsStatus in the store — VoiceButton writes to it
+  // so the orb animates whenever TTS is active, regardless of which component owns the
+  // useEdgeTTS instance.
+  const ttsStatus = useAppStore((s) => s.ttsStatus);
+  const orbState = useOrb(ttsStatus);
+
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const scrollContainerRef = useRef<HTMLDivElement>(null);
   const messagesContainerRef = useRef<HTMLDivElement>(null);
@@ -613,11 +643,33 @@ export function ChatView() {
     }
   };
 
+  const handleVoiceSubmit = useCallback(
+    async (text: string) => {
+      if (!activeSessionId) return;
+      await continueSession(activeSessionId, [{ type: 'text', text }]);
+    },
+    [activeSessionId, continueSession]
+  );
+
   const handleStop = () => {
     if (activeSessionId) {
       stopSession(activeSessionId);
     }
   };
+
+  const adjustTextareaHeight = useCallback(() => {
+    const textarea = textareaRef.current;
+    if (!textarea) return;
+    textarea.style.height = 'auto';
+    const maxHeight = 180;
+    const nextHeight = Math.min(textarea.scrollHeight, maxHeight);
+    textarea.style.height = `${nextHeight}px`;
+    textarea.style.overflowY = textarea.scrollHeight > maxHeight ? 'auto' : 'hidden';
+  }, []);
+
+  useEffect(() => {
+    adjustTextareaHeight();
+  }, [adjustTextareaHeight, prompt]);
 
   if (!activeSession) {
     return (
@@ -632,55 +684,74 @@ export function ChatView() {
       {/* Header */}
       <div
         ref={headerRef}
-        className="relative h-12 border-b border-border-muted grid grid-cols-[1fr_auto_1fr] items-center px-4 lg:px-8 bg-background/88 backdrop-blur-md"
+        className="relative h-12 border-b border-border-muted flex items-center justify-between px-4 lg:px-6 bg-background/82 backdrop-blur-xl shrink-0 shadow-[0_1px_0_var(--color-border-subtle)]"
       >
-        <div className="text-[11px] font-medium tracking-[0.08em] uppercase text-text-muted">
-          Open Cowork
+        {/* Left: Orb */}
+        <div className="shrink-0">
+          <OrbCanvas state={orbState} size={32} />
         </div>
+
+        {/* Center: Title */}
         <h2
           ref={titleRef}
-          className="text-[15px] font-medium text-text-primary text-center truncate max-w-[40vw] lg:max-w-[32rem]"
+          className="text-[13.5px] font-semibold text-text-primary truncate min-w-0 flex-1 mx-4 tracking-[-0.01em] text-center"
         >
           {activeSession.title}
         </h2>
-        {activeConnectors.length > 0 && (
-          <>
-            <div
-              ref={connectorMeasureRef}
-              aria-hidden="true"
-              className="absolute left-0 top-0 -z-10 opacity-0 pointer-events-none"
-            >
-              <div className="flex items-center gap-2 px-2 py-1 rounded-lg border border-mcp/20">
-                <Plug className="w-3.5 h-3.5" />
-                <span className="text-xs font-medium whitespace-nowrap">
-                  {t('chat.connectorCount', { count: activeConnectors.length })}
+
+        {/* Right: Connector badge + mute controls */}
+        <div className="flex items-center gap-2 shrink-0">
+          {activeConnectors.length > 0 && (
+            <>
+              <div
+                ref={connectorMeasureRef}
+                aria-hidden="true"
+                className="absolute left-0 top-0 -z-10 opacity-0 pointer-events-none"
+              >
+                <div className="flex items-center gap-2 px-2 py-1 rounded-lg border border-mcp/20">
+                  <Plug className="w-3.5 h-3.5" />
+                  <span className="text-xs font-medium whitespace-nowrap">
+                    {t('chat.connectorCount', { count: activeConnectors.length })}
+                  </span>
+                </div>
+              </div>
+              <div
+                className="flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-mcp/10 border border-mcp/20 shrink-0 cursor-default"
+                title={activeConnectors.map((c) => `${c.name} (${c.toolCount} tools)`).join('\n')}
+              >
+                <Plug className="w-3 h-3 text-mcp" />
+                <span className="text-[11px] text-mcp font-medium">
+                  {showConnectorLabel
+                    ? t('chat.connectorCount', { count: activeConnectors.length })
+                    : activeConnectors.length}
                 </span>
               </div>
-            </div>
-            <div className="flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-mcp/8 border border-mcp/15 justify-self-end">
-              <Plug className="w-3.5 h-3.5 text-mcp" />
-              <span className="text-xs text-mcp font-medium">
-                {showConnectorLabel
-                  ? t('chat.connectorCount', { count: activeConnectors.length })
-                  : activeConnectors.length}
-              </span>
-            </div>
-          </>
-        )}
+            </>
+          )}
+          <MuteControls
+            micMuted={micMuted}
+            ttsMuted={ttsMuted}
+            onMicToggle={handleMicToggle}
+            onTtsToggle={handleTtsToggle}
+          />
+        </div>
       </div>
 
       {/* Messages */}
-      <div ref={scrollContainerRef} className="flex-1 overflow-y-auto">
+      <div ref={scrollContainerRef} className="flex-1 overflow-y-auto scroll-smooth">
         <div
           ref={messagesContainerRef}
           className="w-full max-w-[920px] mx-auto py-8 px-5 lg:px-8 space-y-5"
         >
           {displayedMessages.length === 0 ? (
-            <div className="flex flex-col items-center justify-center py-28 text-text-muted space-y-3 text-center">
-              <p className="text-[11px] uppercase tracking-[0.16em] text-text-muted/80">
-                Open Cowork
-              </p>
-              <p className="text-base text-text-secondary">{t('chat.startConversation')}</p>
+            <div className="flex flex-col items-center justify-center py-32 space-y-4 text-center animate-fade-in">
+              <img
+                src={isLight ? nectarIconBlack : nectarIconWhite}
+                alt=""
+                className="w-10 h-10 object-contain opacity-[0.15]"
+                draggable={false}
+              />
+              <p className="text-[13px] text-text-muted">{t('chat.startConversation')}</p>
             </div>
           ) : (
             displayedMessages.map((message) => {
@@ -721,8 +792,8 @@ export function ChatView() {
       </div>
 
       {/* Input */}
-      <div className="border-t border-border-muted bg-background/92 backdrop-blur-md">
-        <div className="max-w-[920px] mx-auto px-5 lg:px-8 py-5">
+      <div className="border-t border-border-muted bg-background/82 backdrop-blur-xl shadow-[0_-1px_0_var(--color-border-subtle)]">
+        <div className="max-w-[920px] mx-auto px-4 sm:px-5 lg:px-8 py-3.5">
           <form
             onSubmit={handleSubmit}
             onDragOver={handleDragOver}
@@ -776,23 +847,46 @@ export function ChatView() {
             )}
 
             <div
-              className={`flex items-end gap-2 p-3.5 rounded-[1.75rem] bg-background/88 border border-border-muted shadow-soft transition-colors ${
-                isDragging ? 'ring-2 ring-accent bg-accent/5' : ''
-              }`}
+              className={`relative flex items-end gap-2 px-4 py-3 rounded-[2rem]
+                transition-all duration-300 ease-out
+                ${isDragging
+                  ? 'ring-2 ring-accent ring-offset-2 ring-offset-background bg-accent/[0.06]'
+                  : 'bg-[rgba(24,24,24,0.85)]'
+                }
+                ${!isDragging ? (
+                  prompt.trim() || textareaRef.current?.value.trim()
+                    ? 'hover:border-[rgba(6,182,212,0.2)]'
+                    : 'hover:border-[rgba(255,255,255,0.08)]'
+                ) : ''}
+              `}
+              style={{
+                border: prompt.trim() || textareaRef.current?.value.trim()
+                  ? '1px solid rgba(6,182,212,0.2)'
+                  : '1px solid rgba(255,255,255,0.06)',
+                boxShadow: isDragging
+                  ? 'var(--glow-cyan), var(--depth-2)'
+                  : prompt.trim() || textareaRef.current?.value.trim()
+                    ? '0 0 0 1px rgba(6,182,212,0.15), 0 0 20px rgba(6,182,212,0.05), var(--depth-2)'
+                    : 'var(--depth-1)',
+                backdropFilter: 'blur(20px)',
+              }}
             >
               <button
                 type="button"
                 onClick={handleFileSelect}
-                className="w-9 h-9 rounded-2xl flex items-center justify-center text-text-muted hover:text-text-primary hover:bg-surface-hover transition-colors"
+                className="w-8 h-8 rounded-xl flex items-center justify-center text-text-muted hover:text-text-secondary hover:bg-surface-hover transition-colors shrink-0"
                 title={t('welcome.attachFiles')}
               >
-                <Plus className="w-5 h-5" />
+                <Paperclip className="w-4 h-4" />
               </button>
 
               <textarea
                 ref={textareaRef}
                 value={prompt}
-                onChange={(e) => setPrompt(e.target.value)}
+                onChange={(e) => {
+                  setPrompt(e.target.value);
+                  adjustTextareaHeight();
+                }}
                 onCompositionStart={() => {
                   isComposingRef.current = true;
                 }}
@@ -801,7 +895,6 @@ export function ChatView() {
                 }}
                 onPaste={handlePaste}
                 onKeyDown={(e) => {
-                  // Enter to send, Shift+Enter for new line
                   if (e.key === 'Enter' && !e.shiftKey) {
                     if (e.nativeEvent.isComposing || isComposingRef.current || e.keyCode === 229) {
                       return;
@@ -813,45 +906,51 @@ export function ChatView() {
                 placeholder={t('chat.typeMessage')}
                 disabled={isSubmitting}
                 rows={1}
-                className="flex-1 resize-none bg-transparent border-none outline-none text-text-primary placeholder:text-text-muted text-[15px] py-2"
+                style={{ maxHeight: '180px' }}
+                className="min-h-[2rem] flex-1 resize-none bg-transparent border-none outline-none text-text-primary placeholder:text-text-muted/60 text-[14.5px] py-1.5 leading-relaxed overflow-hidden"
               />
 
-              <div className="flex items-center gap-2">
-                {/* Model display */}
-                <span className="hidden sm:inline-flex px-2.5 py-1 rounded-full border border-border-subtle bg-background/60 text-xs text-text-muted">
-                  {appConfig?.model || t('chat.noModel')}
-                </span>
-
-                {canStop && (
+              <div className="flex items-center gap-1.5 shrink-0 self-end">
+                {appConfig?.model && (
+                  <span className="hidden md:inline-flex max-w-[9rem] truncate items-center px-2 py-0.5 rounded-md border border-border-subtle bg-surface-muted text-[10.5px] text-text-muted font-mono leading-none">
+                    {appConfig.model.split('-').slice(-2).join('-')}
+                  </span>
+                )}
+                <VoiceButton
+                  onSubmitText={handleVoiceSubmit}
+                  activeTurn={hasActiveTurn}
+                  messages={displayedMessages}
+                  disabled={canStop}
+                  ttsMuted={ttsMuted}
+                  micMuted={micMuted}
+                />
+                {canStop ? (
                   <button
                     type="button"
                     onClick={handleStop}
-                    className="w-9 h-9 rounded-2xl flex items-center justify-center bg-error/10 text-error hover:bg-error/20 transition-colors"
+                    className="w-8 h-8 rounded-xl flex items-center justify-center bg-error/10 text-error hover:bg-error/20 transition-colors"
                     title={t('chat.stop')}
                   >
-                    <Square className="w-4 h-4" />
+                    <Square className="w-3.5 h-3.5" />
+                  </button>
+                ) : (
+                  <button
+                    type="submit"
+                    disabled={
+                      (!prompt.trim() &&
+                        !textareaRef.current?.value.trim() &&
+                        pastedImages.length === 0 &&
+                        attachedFiles.length === 0) ||
+                      isSubmitting
+                    }
+                    className="w-8 h-8 rounded-xl flex items-center justify-center bg-accent text-white disabled:opacity-35 disabled:cursor-not-allowed hover:bg-accent-hover transition-colors"
+                    title={t('chat.sendMessage')}
+                  >
+                    <Send className="w-3.5 h-3.5" />
                   </button>
                 )}
-                <button
-                  type="submit"
-                  disabled={
-                    (!prompt.trim() &&
-                      !textareaRef.current?.value.trim() &&
-                      pastedImages.length === 0 &&
-                      attachedFiles.length === 0) ||
-                    isSubmitting
-                  }
-                  className="w-9 h-9 rounded-2xl flex items-center justify-center bg-accent text-background disabled:opacity-50 disabled:cursor-not-allowed hover:bg-accent-hover transition-colors"
-                  title={t('chat.sendMessage')}
-                >
-                  <Send className="w-4 h-4" />
-                </button>
               </div>
             </div>
-
-            <p className="text-[11px] text-text-muted/60 text-center mt-2.5">
-              {t('chat.disclaimer')}
-            </p>
           </form>
         </div>
       </div>

@@ -91,11 +91,11 @@ function summarizeStructuredToolPart(part: unknown): string | null {
 }
 
 function extractImagesFromDetails(details: unknown): ToolResultImage[] {
-  if (!isRecord(details) || !Array.isArray(details.openCoworkImages)) {
+  if (!isRecord(details) || !Array.isArray(details.necterImages)) {
     return [];
   }
 
-  return details.openCoworkImages.flatMap((image) =>
+  return details.necterImages.flatMap((image) =>
     isToolResultImage(image) ? [{ data: image.data, mimeType: image.mimeType }] : []
   );
 }

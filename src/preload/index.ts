@@ -438,6 +438,14 @@ contextBridge.exposeInMainWorld('electronAPI', {
     setEnabled: (enabled: boolean): Promise<{ success: boolean; enabled: boolean }> =>
       ipcRenderer.invoke('memory.setEnabled', enabled),
   },
+
+  // Voice — Whisper transcription via main process
+      voice: {
+        transcribe: (audioBuffer: ArrayBuffer, mimeType: string): Promise<string> =>
+          ipcRenderer.invoke('voice.transcribe', audioBuffer, mimeType),
+        speak: (text: string, voice?: string): Promise<ArrayBuffer> =>
+          ipcRenderer.invoke('voice.speak', text, voice),
+      },
 });
 
 // Type declaration for the renderer process
@@ -673,6 +681,10 @@ declare global {
           workspaceKey?: string
         ) => Promise<MemoryInspectSessionResult | null>;
         setEnabled: (enabled: boolean) => Promise<{ success: boolean; enabled: boolean }>;
+      };
+      voice: {
+        transcribe: (audioBuffer: ArrayBuffer, mimeType: string) => Promise<string>;
+        speak: (text: string) => Promise<ArrayBuffer>;
       };
     };
   }

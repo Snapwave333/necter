@@ -1,16 +1,33 @@
 /// <reference types="vite/client" />
 
-declare module '*.png' {
-  const src: string;
-  export default src;
+// Extend Window in renderer process with electronAPI (declared in preload)
+interface ElectronAPI {
+  send: (event: unknown) => void;
+  on: (callback: (event: unknown) => void) => () => void;
+  invoke: <T>(event: unknown) => Promise<T>;
+  platform: string;
+  getSystemTheme: () => Promise<{ shouldUseDarkColors: boolean }>;
+  getVersion: () => Promise<string>;
+  openExternal: (url: string) => Promise<boolean>;
+  showItemInFolder: (filePath: string, cwd?: string) => Promise<boolean>;
+  selectFiles: () => Promise<string[]>;
+  config: unknown;
+  window: unknown;
+  mcp: unknown;
+  skills: unknown;
+  plugins: unknown;
+  sandbox: unknown;
+  logs: unknown;
+  remote: unknown;
+  schedule: unknown;
+  memory: unknown;
+  artifacts: unknown;
+  voice: {
+    transcribe: (audioBuffer: ArrayBuffer, mimeType: string) => Promise<string>;
+    speak: (text: string, voice?: string) => Promise<ArrayBuffer>;
+  };
 }
 
-declare module '*.jpg' {
-  const src: string;
-  export default src;
-}
-
-declare module '*.svg' {
-  const src: string;
-  export default src;
+interface Window {
+  electronAPI: ElectronAPI;
 }

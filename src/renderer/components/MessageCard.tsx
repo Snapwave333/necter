@@ -58,13 +58,13 @@ export const MessageCard = memo(function MessageCard({ message, isStreaming }: M
   };
 
   return (
-    <div className="animate-fade-in">
+    <div className="animate-message-enter">
       {isUser ? (
         // User message - compact styling with smaller padding and radius
         <div className="flex items-start gap-2 justify-end group">
           <div
-            className={`message-user px-4 py-3 rounded-[1.65rem] max-w-[80%] min-w-0 break-words ${
-              isQueued ? 'opacity-70 border-dashed' : ''
+            className={`message-user px-4 py-3 rounded-[1.65rem] max-w-[80%] min-w-0 break-words !border-0 ${
+              isQueued ? 'opacity-70 border-dashed border-border' : ''
             } ${isCancelled ? 'opacity-60' : ''}`}
           >
             {isQueued && (
@@ -96,7 +96,8 @@ export const MessageCard = memo(function MessageCard({ message, isStreaming }: M
           </div>
           <button
             onClick={handleCopy}
-            className="mt-1 w-6 h-6 flex items-center justify-center rounded-md bg-surface-muted hover:bg-surface-active transition-all opacity-0 group-hover:opacity-100 flex-shrink-0"
+            className="mt-2 w-6 h-6 flex items-center justify-center rounded-lg bg-[rgba(255,255,255,0.04)] hover:bg-[rgba(255,255,255,0.08)] transition-all opacity-0 group-hover:opacity-100 flex-shrink-0"
+            style={{ boxShadow: 'var(--depth-1)' }}
             title={t('messageCard.copyMessage')}
           >
             {copied ? (
@@ -108,7 +109,7 @@ export const MessageCard = memo(function MessageCard({ message, isStreaming }: M
         </div>
       ) : (
         // Assistant message — no bubble, direct content (Claude style)
-        <div className="space-y-1.5">
+        <div className="message-assistant space-y-1.5">
           {contentBlocks.map((block, index) => {
             // Skip tool_result blocks that are merged into their tool_use card
             if (
@@ -128,6 +129,13 @@ export const MessageCard = memo(function MessageCard({ message, isStreaming }: M
               />
             );
           })}
+          {isStreaming && (
+            <div className="flex items-center gap-1 py-2">
+              <span className="w-1.5 h-1.5 rounded-full bg-text-muted animate-streaming-dot-1" />
+              <span className="w-1.5 h-1.5 rounded-full bg-text-muted animate-streaming-dot-2" />
+              <span className="w-1.5 h-1.5 rounded-full bg-text-muted animate-streaming-dot-3" />
+            </div>
+          )}
         </div>
       )}
     </div>

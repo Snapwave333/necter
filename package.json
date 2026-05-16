@@ -1,7 +1,7 @@
 {
-  "name": "open-cowork",
+  "name": "necter",
   "version": "3.3.0",
-  "description": "Open-source AI agent desktop app for Windows & macOS — one-click install Claude Code, MCP tools, and Skills with sandbox isolation and multi-model support",
+  "description": "Necter — AI agent desktop app for Windows & macOS — one-click install Claude Code, MCP tools, and Skills with sandbox isolation and multi-model support",
   "keywords": [
     "ai-agent",
     "claude",
@@ -24,13 +24,13 @@
     "slack",
     "multi-model"
   ],
-  "homepage": "https://github.com/OpenCoworkAI/open-cowork",
+  "homepage": "https://github.com/NecterAI/necter",
   "repository": {
     "type": "git",
-    "url": "https://github.com/OpenCoworkAI/open-cowork.git"
+    "url": "https://github.com/NecterAI/necter.git"
   },
   "bugs": {
-    "url": "https://github.com/OpenCoworkAI/open-cowork/issues"
+    "url": "https://github.com/NecterAI/necter/issues"
   },
   "engines": {
     "node": ">=22"
@@ -84,6 +84,7 @@
     "i18next": "^25.10.1",
     "i18next-browser-languagedetector": "^8.2.1",
     "katex": "^0.16.45",
+    "kokoro-js": "1.2.1",
     "lucide-react": "^1.8.0",
     "ngrok": "^5.0.0-beta.2",
     "openai": "^6.32.0",
@@ -133,7 +134,7 @@
     "fast-xml-parser": "^5.5.6",
     "tar": "^7.5.11"
   },
-  "author": "Open Cowork Team",
+  "author": "Necter",
   "license": "MIT",
   "lint-staged": {
     "*.{ts,tsx}": [

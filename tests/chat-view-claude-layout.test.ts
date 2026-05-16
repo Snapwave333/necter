@@ -14,16 +14,23 @@ describe('ChatView Claude-style layout', () => {
     expect(source).toContain('max-w-[920px]');
   });
 
-  it('uses a quieter header treatment with Open Cowork eyebrow and compact connector badge', () => {
+  it('uses a quieter header treatment with the Nectar connector badge', () => {
     const source = readChatView();
-    expect(source).toContain('Open Cowork');
-    expect(source).toContain('bg-background/88');
+    expect(source).toContain('bg-background/82');
     expect(source).toContain('border-border-muted');
+    expect(source).toContain("t('chat.connectorCount'");
   });
 
   it('uses a softer rounded composer shell instead of the previous heavy input bar', () => {
     const source = readChatView();
     expect(source).toContain('rounded-[1.75rem]');
     expect(source).toContain('shadow-soft');
+  });
+
+  it('auto-resizes the composer as prompts grow', () => {
+    const source = readChatView();
+    expect(source).toContain('adjustTextareaHeight');
+    expect(source).toContain("textarea.style.height = 'auto'");
+    expect(source).toContain("style={{ maxHeight: '180px' }}");
   });
 });

@@ -231,7 +231,6 @@ export function SettingsConnectors({ isActive }: { isActive: boolean }) {
                   key={server.id}
                   server={server}
                   status={status}
-                  toolCount={serverTools.length}
                   tools={serverTools}
                   onEdit={() => setEditingServer(server)}
                   onDelete={() => handleDeleteServer(server.id)}
@@ -405,7 +404,6 @@ export function SettingsConnectors({ isActive }: { isActive: boolean }) {
 function ServerCard({
   server,
   status,
-  toolCount,
   tools,
   onEdit,
   onDelete,
@@ -414,7 +412,6 @@ function ServerCard({
 }: {
   server: MCPServerConfig;
   status?: MCPServerStatus;
-  toolCount: number;
   tools: MCPToolInfo[];
   onEdit: () => void;
   onDelete: () => void;
@@ -493,7 +490,7 @@ function ServerCard({
                   className="flex items-center gap-1 hover:text-accent transition-colors"
                 >
                   <Plug className="w-3 h-3" />
-                  <span>{t('mcp.toolsAvailable', { count: toolCount })}</span>
+                  <span>{t('mcp.toolsLabel')}</span>
                   {showTools ? (
                     <ChevronDown className="w-3 h-3" />
                   ) : (
@@ -506,8 +503,7 @@ function ServerCard({
               {showTools && tools.length > 0 && (
                 <div className="mt-3 p-3 rounded-lg bg-surface-muted border border-border">
                   <div className="text-xs font-medium text-text-primary mb-2">
-                    {t('mcp.toolsAvailable', { count: tools.length }).split(' ').slice(1).join(' ')}
-                    :
+                    {t('mcp.toolsLabel')}:
                   </div>
                   <div className="grid grid-cols-1 gap-2 max-h-48 overflow-y-auto">
                     {tools.map((tool, idx) => {

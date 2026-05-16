@@ -1,6 +1,6 @@
-appId: com.opencowork.app
-productName: Open Cowork
-copyright: Copyright © 2026 Open Cowork Team
+appId: com.necter.app
+productName: Necter
+copyright: Copyright © 2026 Necter
 
 directories:
   output: release
@@ -92,8 +92,8 @@ mac:
   entitlementsInherit: resources/entitlements.mac.plist
   extendInfo:
     LSApplicationCategoryType: public.app-category.developer-tools
-    NSScreenCaptureUsageDescription: 'Open Cowork needs screen recording access for GUI automation.'
-    NSAccessibilityUsageDescription: 'Open Cowork needs accessibility access for GUI automation.'
+    NSScreenCaptureUsageDescription: 'Necter needs screen recording access for GUI automation.'
+    NSAccessibilityUsageDescription: 'Necter needs accessibility access for GUI automation.'
   extraResources:
     - from: .bundle-resources/mcp
       to: mcp
@@ -147,7 +147,7 @@ dmg:
   contents:
     - x: 150
       y: 220
-      name: 'Open Cowork.app'
+      name: 'Necter.app'
     - x: 450
       y: 220
       type: link
@@ -159,5 +159,5 @@ extraMetadata:
 
 publish:
   provider: github
-  owner: OpenCoworkAI
-  repo: open-cowork
+  owner: NecterAI
+  repo: necter

@@ -14,6 +14,7 @@ import {
   Paperclip,
   BookOpen,
   FileSearch,
+  Palette,
 } from 'lucide-react';
 
 type AttachedFile = {
@@ -24,7 +25,8 @@ type AttachedFile = {
   inlineDataBase64?: string;
 };
 
-import welcomeLogoSrc from '../assets/logo.png';
+import nectarLockupWhite from '../assets/nectar-lockup-white.png';
+import nectarLockupBlack from '../assets/nectar-lockup-black.png';
 
 export function WelcomeView() {
   const { t } = useTranslation();
@@ -40,6 +42,9 @@ export function WelcomeView() {
   const textareaRef = useRef<HTMLTextAreaElement>(null);
   const { startSession, changeWorkingDir, isElectron } = useIPC();
   const workingDir = useAppStore((state) => state.workingDir);
+  const settings = useAppStore((state) => state.settings);
+  const systemDarkMode = useAppStore((state) => state.systemDarkMode);
+  const isLight = settings.theme === 'light' || (settings.theme === 'system' && !systemDarkMode);
   const setGlobalNotice = useAppStore((state) => state.setGlobalNotice);
   const isConfigured = useAppStore((state) => state.isConfigured);
   const setShowSettings = useAppStore((state) => state.setShowSettings);
@@ -398,6 +403,12 @@ export function WelcomeView() {
 
   const quickTags = [
     {
+      id: 'open-design',
+      label: t('welcome.openDesignPrototype'),
+      icon: Palette,
+      prompt: t('welcome.quickPromptOpenDesign'),
+    },
+    {
       id: 'create',
       label: t('welcome.createFile'),
       icon: FileText,
@@ -439,87 +450,82 @@ export function WelcomeView() {
   ];
 
   return (
-    <div className="flex-1 flex flex-col items-center justify-center px-5 py-10 md:px-8 md:py-14">
-      <div className="max-w-[840px] w-full space-y-7 animate-fade-in">
-        <div className="space-y-4 text-center">
-          <div className="flex items-center justify-center gap-4">
-            <img
-              src={welcomeLogoSrc}
-              alt={t('welcome.logoAlt')}
-              className="w-16 h-16 md:w-20 md:h-20 rounded-[1.4rem] object-cover border border-border-subtle bg-background/60 shadow-soft"
-            />
-            <div className="text-left">
-              <h1 className="text-[2.35rem] md:text-[3.1rem] leading-none font-semibold tracking-[-0.05em] text-text-primary">
-                Open Cowork
-              </h1>
+    <div className="relative flex-1 flex flex-col items-center justify-center px-4 py-8 sm:px-5 md:px-8 md:py-12">
+      <div className="max-w-[840px] w-full space-y-6 animate-slide-up">
+        <div className="space-y-5 text-center">
+          <div className="flex flex-col items-center gap-5">
+            <div className="logo-glow">
+              <img
+                src={isLight ? nectarLockupBlack : nectarLockupWhite}
+                alt="Nectar"
+                className="h-14 md:h-18 object-contain select-none relative"
+                draggable={false}
+              />
             </div>
           </div>
-          <p className="heading-serif text-[1.15rem] md:text-[1.45rem] font-medium tracking-[-0.02em] text-text-secondary text-center">
+          <p className="heading-serif text-[1.15rem] md:text-[1.45rem] font-medium tracking-[-0.02em] text-text-primary text-center animate-fade-in" style={{ animationDelay: '80ms' }}>
             {t('welcome.title')}
           </p>
         </div>
 
         {/* API Not Configured Hint */}
         {!isConfigured && (
-          <p className="text-sm text-text-muted text-center">
-            {t('welcome.apiNotConfigured')}{' '}
+          <div className="mx-auto flex w-fit items-center gap-2.5 rounded-2xl border border-amber-400/20 bg-amber-400/[0.06] px-4 py-2 text-sm animate-fade-in">
+            <span className="w-1.5 h-1.5 rounded-full bg-amber-400 flex-shrink-0 animate-pulse" />
+            <span className="text-text-secondary">{t('welcome.apiNotConfigured')}</span>
             <button
               type="button"
               onClick={() => {
                 setSettingsTab('api');
                 setShowSettings(true);
               }}
-              className="inline-flex items-center gap-1 text-accent hover:text-accent-hover transition-colors"
+              className="inline-flex items-center gap-1 font-medium text-accent hover:text-accent-hover transition-colors"
             >
               {t('welcome.goToSettings')}
               <ArrowRight className="w-3.5 h-3.5" />
             </button>
-          </p>
+          </div>
         )}
 
         {/* Quick Action Tags */}
-        <div className="flex flex-wrap gap-2 justify-center px-3">
-          {quickTags.map((tag) => (
+        <div className="flex flex-wrap gap-1.5 justify-center px-2">
+          {quickTags.map((tag, index) => (
             <button
               key={tag.id}
               onClick={() => handleTagClick(tag.id, tag.prompt)}
-              className={`inline-flex items-center gap-2 rounded-full border px-3 py-2 text-sm transition-colors ${
+              style={{ animationDelay: `${index * 40}ms` }}
+              className={`animate-tag-enter inline-flex items-center gap-1.5 rounded-full border px-3 py-1.5 text-[13px] font-medium transition-all duration-150 ${
                 selectedTag === tag.id
-                  ? 'border-accent/30 bg-accent-muted text-accent'
-                  : 'border-border-subtle bg-background/65 text-text-secondary hover:bg-surface-hover hover:text-text-primary'
-              } ${
-                ('requiresChrome' in tag && tag.requiresChrome) ||
-                ('requiresNotion' in tag && tag.requiresNotion)
-                  ? 'relative'
-                  : ''
+                  ? 'border-accent/30 bg-accent/10 text-accent shadow-soft'
+                  : 'border-border bg-surface/60 text-text-secondary hover:bg-surface hover:text-text-primary hover:border-border-muted hover:shadow-soft'
               }`}
             >
               <tag.icon
-                className={`w-4 h-4 ${selectedTag === tag.id ? 'text-accent' : 'text-text-muted'}`}
+                className={`w-3.5 h-3.5 flex-shrink-0 ${selectedTag === tag.id ? 'text-accent' : 'text-text-muted'}`}
               />
               <span>{tag.label}</span>
-              {'requiresChrome' in tag && tag.requiresChrome && (
-                <span className="ml-1 px-1.5 py-px text-[9px] rounded bg-surface-active text-text-muted">
-                  {t('welcome.chromeRequired')}
-                </span>
-              )}
-              {'requiresNotion' in tag && tag.requiresNotion && (
-                <span className="ml-1 px-1.5 py-px text-[9px] rounded bg-surface-active text-text-muted">
-                  {t('welcome.notionRequired')}
+              {(('requiresChrome' in tag && tag.requiresChrome) ||
+                ('requiresNotion' in tag && tag.requiresNotion)) && (
+                <span className="ml-0.5 px-1.5 py-0.5 text-[10px] font-medium rounded-full bg-surface-active border border-border-subtle text-text-muted leading-none">
+                  {'requiresChrome' in tag && tag.requiresChrome
+                    ? t('welcome.chromeRequired')
+                    : t('welcome.notionRequired')}
                 </span>
               )}
             </button>
           ))}
         </div>
 
-        {/* Main Input Card - Right aligned */}
+        {/* Main Input Card */}
         <form
           onSubmit={handleSubmit}
           onDragOver={handleDragOver}
           onDragLeave={handleDragLeave}
           onDrop={handleDrop}
-          className={`rounded-[1.9rem] border border-border-muted bg-background/85 shadow-soft px-5 py-5 space-y-4 transition-colors ${
-            isDragging ? 'ring-2 ring-accent bg-accent/5' : ''
+          className={`rounded-[1.9rem] border bg-surface/96 shadow-soft px-4 py-4 sm:px-5 space-y-3 transition-all duration-200 ${
+            isDragging
+              ? 'ring-2 ring-accent ring-offset-2 ring-offset-background border-accent/30 bg-accent/5'
+              : 'border-border hover:border-accent/20 hover:shadow-elevated focus-within:border-accent/25 focus-within:shadow-elevated focus-within:ring-1 focus-within:ring-accent/10'
           }`}
         >
           {/* Image previews */}
@@ -599,20 +605,20 @@ export function WelcomeView() {
           />
 
           {/* Bottom Actions */}
-          <div className="flex items-center justify-between pt-3 border-t border-border-muted">
-            <div className="flex items-center gap-3">
+          <div className="flex flex-col gap-2 pt-2.5 border-t border-border-muted sm:flex-row sm:items-center sm:justify-between">
+            <div className="flex min-w-0 flex-wrap items-center gap-1">
               <button
                 type="button"
                 onClick={handleSelectFolder}
-                className={`flex items-center gap-2 text-sm transition-colors ${
+                className={`min-w-0 flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg text-[12.5px] transition-colors ${
                   workingDir
-                    ? 'text-text-secondary hover:text-text-primary'
-                    : 'text-accent hover:text-accent-hover'
+                    ? 'text-text-muted hover:text-text-secondary hover:bg-surface-hover'
+                    : 'text-accent hover:text-accent-hover hover:bg-accent/10'
                 }`}
                 title={workingDir || t('welcome.selectWorkingFolder')}
               >
-                <FolderOpen className="w-4 h-4" />
-                <span>
+                <FolderOpen className="w-3.5 h-3.5" />
+                <span className="max-w-[13rem] truncate">
                   {workingDir ? workingDir.split(/[/\\]/).pop() : t('welcome.selectWorkingFolder')}
                 </span>
               </button>
@@ -621,9 +627,9 @@ export function WelcomeView() {
                 <button
                   type="button"
                   onClick={handleFileSelect}
-                  className="flex items-center gap-2 text-sm text-text-secondary hover:text-text-primary transition-colors"
+                  className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg text-[12.5px] text-text-muted hover:text-text-secondary hover:bg-surface-hover transition-colors"
                 >
-                  <Paperclip className="w-4 h-4" />
+                  <Paperclip className="w-3.5 h-3.5" />
                   <span>{t('welcome.attachFiles')}</span>
                 </button>
               )}
@@ -632,10 +638,10 @@ export function WelcomeView() {
             <button
               type="submit"
               disabled={!canSubmit || isSubmitting}
-              className="btn btn-primary px-5 py-2.5 rounded-2xl disabled:opacity-50 disabled:cursor-not-allowed"
+              className="inline-flex items-center justify-center gap-2 px-4 py-2 rounded-xl bg-accent text-white text-[13.5px] font-medium hover:bg-accent-hover disabled:opacity-40 disabled:cursor-not-allowed transition-all shadow-soft hover:shadow-elevated sm:flex-shrink-0"
             >
               <span>{isSubmitting ? t('welcome.starting') : t('welcome.letsGo')}</span>
-              <ArrowRight className="w-4 h-4" />
+              <ArrowRight className="w-3.5 h-3.5" />
             </button>
           </div>
         </form>

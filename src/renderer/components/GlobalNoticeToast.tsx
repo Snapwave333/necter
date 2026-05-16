@@ -1,6 +1,6 @@
 import { useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
-import { X } from 'lucide-react';
+import { AlertTriangle, CheckCircle2, Info, X, XCircle } from 'lucide-react';
 import type { GlobalNotice, GlobalNoticeAction } from '../store';
 
 interface Props {
@@ -9,11 +9,34 @@ interface Props {
   onAction: (action: GlobalNoticeAction) => void;
 }
 
-const noticeToneClass: Record<GlobalNotice['type'], { border: string; text: string }> = {
-  info: { border: 'border-border', text: 'text-text-primary' },
-  warning: { border: 'border-warning/50', text: 'text-warning' },
-  error: { border: 'border-error/50', text: 'text-error' },
-  success: { border: 'border-success/50', text: 'text-success' },
+const noticeToneClass: Record<
+  GlobalNotice['type'],
+  { border: string; text: string; icon: string; Icon: typeof Info }
+> = {
+  info: {
+    border: 'border-border-subtle',
+    text: 'text-text-primary',
+    icon: 'text-accent',
+    Icon: Info,
+  },
+  warning: {
+    border: 'border-warning/35',
+    text: 'text-text-primary',
+    icon: 'text-warning',
+    Icon: AlertTriangle,
+  },
+  error: {
+    border: 'border-error/35',
+    text: 'text-text-primary',
+    icon: 'text-error',
+    Icon: XCircle,
+  },
+  success: {
+    border: 'border-success/35',
+    text: 'text-text-primary',
+    icon: 'text-success',
+    Icon: CheckCircle2,
+  },
 };
 
 export function GlobalNoticeToast({ notice, onDismiss, onAction }: Props) {
@@ -34,6 +57,7 @@ export function GlobalNoticeToast({ notice, onDismiss, onAction }: Props) {
   }
 
   const tone = noticeToneClass[notice.type];
+  const NoticeIcon = tone.Icon;
   const message = notice.messageKey ? t(notice.messageKey, notice.messageValues) : notice.message;
   const actionLabel =
     notice.actionLabel ||
@@ -43,14 +67,19 @@ export function GlobalNoticeToast({ notice, onDismiss, onAction }: Props) {
   return (
     <div className="fixed top-4 right-4 left-4 sm:left-auto z-50">
       <div
-        className={`max-w-sm rounded-[1.4rem] border bg-background/92 backdrop-blur-md shadow-elevated ${tone.border}`}
+        className={`max-w-sm overflow-hidden rounded-[1.35rem] border bg-surface/92 backdrop-blur-xl shadow-elevated ${tone.border}`}
       >
-        <div className="flex items-start gap-3 px-4 py-3">
+        <div className="flex items-start gap-3 px-4 py-3.5">
+          <div
+            className={`mt-0.5 flex h-7 w-7 flex-shrink-0 items-center justify-center rounded-xl bg-background/70 ${tone.icon}`}
+          >
+            <NoticeIcon className="h-4 w-4" />
+          </div>
           <div className={`flex-1 text-sm leading-relaxed ${tone.text}`}>{message}</div>
           <button
             type="button"
             onClick={onDismiss}
-            className="text-text-muted hover:text-text-primary transition-colors"
+            className="rounded-lg p-1 text-text-muted hover:bg-surface-hover hover:text-text-primary transition-colors"
             aria-label={t('common.close')}
           >
             <X className="h-4 w-4" />

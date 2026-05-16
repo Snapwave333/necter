@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Shield, AlertCircle, CheckCircle, Settings, Loader2 } from 'lucide-react';
+import { Shield, AlertCircle, CheckCircle, Settings, Loader2, RefreshCw } from 'lucide-react';
 import { renderLocalizedBannerMessage } from './shared';
 import type { LocalizedBanner } from './shared';
 
@@ -362,9 +362,9 @@ export function SettingsSandbox() {
               {isChecking ? (
                 <Loader2 className="w-3.5 h-3.5 animate-spin" />
               ) : (
-                <Settings className="w-3.5 h-3.5" />
+                <RefreshCw className="w-3.5 h-3.5" />
               )}
-              {t('sandbox.checkStatus')}
+              {isChecking ? t('common.loading') : t('sandbox.checkStatus')}
             </button>
           </div>
 
@@ -398,7 +398,7 @@ export function SettingsSandbox() {
                 <StatusItem
                   label={t('sandbox.wslAvailable')}
                   available={status?.wsl?.available || false}
-                  detail={status?.wsl?.distro}
+                  detail={status?.wsl?.available ? status?.wsl?.distro?.[0] : undefined}
                 />
                 <StatusItem
                   label="Node.js"

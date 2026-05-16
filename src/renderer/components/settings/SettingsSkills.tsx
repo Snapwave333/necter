@@ -13,6 +13,8 @@ import {
   Globe,
   RefreshCw,
   X,
+  Sparkles,
+  Palette,
 } from 'lucide-react';
 import type { Skill, PluginCatalogItemV2, InstalledPlugin, PluginComponentKind } from '../../types';
 import { useAppStore } from '../../store';
@@ -425,14 +427,19 @@ export function SettingsSkills({ isActive }: { isActive: boolean }) {
         title={t('skills.storagePathTitle')}
         description={t('skills.storagePathHint')}
       >
-        <div className="text-xs text-text-muted break-all">
-          {storagePath || t('skills.storagePathUnavailable')}
+        <div className="rounded-xl border border-border-subtle bg-background/55 px-3 py-2.5">
+          <div className="text-[10px] font-semibold uppercase tracking-[0.12em] text-text-muted">
+            {t('skills.storagePathTitle')}
+          </div>
+          <div className="mt-1 text-xs text-text-secondary break-all">
+            {storagePath || t('skills.storagePathUnavailable')}
+          </div>
         </div>
         <div className="grid grid-cols-1 md:grid-cols-3 gap-2">
           <button
             onClick={handleSelectStoragePath}
             disabled={isLoading}
-            className="w-full py-2.5 px-3 rounded-lg border border-border hover:border-accent hover:bg-accent/5 transition-all flex items-center justify-center gap-2 text-text-secondary hover:text-accent disabled:opacity-50"
+            className="w-full py-2.5 px-3 rounded-xl border border-border-subtle bg-surface/70 hover:border-accent/40 hover:bg-accent/5 transition-all flex items-center justify-center gap-2 text-text-secondary hover:text-accent disabled:opacity-50"
           >
             <FolderOpen className="w-4 h-4" />
             {t('skills.selectStoragePath')}
@@ -440,7 +447,7 @@ export function SettingsSkills({ isActive }: { isActive: boolean }) {
           <button
             onClick={handleOpenStoragePath}
             disabled={isLoading}
-            className="w-full py-2.5 px-3 rounded-lg border border-border hover:border-accent hover:bg-accent/5 transition-all flex items-center justify-center gap-2 text-text-secondary hover:text-accent disabled:opacity-50"
+            className="w-full py-2.5 px-3 rounded-xl border border-border-subtle bg-surface/70 hover:border-accent/40 hover:bg-accent/5 transition-all flex items-center justify-center gap-2 text-text-secondary hover:text-accent disabled:opacity-50"
           >
             <Globe className="w-4 h-4" />
             {t('skills.openStoragePath')}
@@ -448,7 +455,7 @@ export function SettingsSkills({ isActive }: { isActive: boolean }) {
           <button
             onClick={handleRefreshSkills}
             disabled={isLoading}
-            className="w-full py-2.5 px-3 rounded-lg border border-border hover:border-accent hover:bg-accent/5 transition-all flex items-center justify-center gap-2 text-text-secondary hover:text-accent disabled:opacity-50"
+            className="w-full py-2.5 px-3 rounded-xl border border-border-subtle bg-surface/70 hover:border-accent/40 hover:bg-accent/5 transition-all flex items-center justify-center gap-2 text-text-secondary hover:text-accent disabled:opacity-50"
           >
             <RefreshCw className="w-4 h-4" />
             {t('skills.refreshSkills')}
@@ -755,33 +762,62 @@ function SkillCard({
 }) {
   const { t } = useTranslation();
   const isBuiltin = skill.type === 'builtin';
+  const isOpenDesign = skill.name.toLowerCase() === 'open-design';
+  const SkillIcon = isOpenDesign ? Palette : Package;
+  const badgeTone = isOpenDesign
+    ? 'bg-accent/10 text-accent border-accent/20'
+    : isBuiltin
+      ? 'bg-accent/10 text-accent border-accent/20'
+      : skill.type === 'mcp'
+        ? 'bg-mcp/10 text-mcp border-mcp/20'
+        : 'bg-success/10 text-success border-success/20';
 
   return (
-    <div className="rounded-lg border border-border bg-surface p-4">
-      <div className="flex items-start justify-between">
-        <div className="flex-1">
-          <div className="flex items-center gap-3 mb-2">
-            <div
-              className={`w-3 h-3 rounded-full ${skill.enabled ? 'bg-success' : 'bg-text-muted'}`}
-            />
-            <h3 className="font-medium text-text-primary">{skill.name}</h3>
+    <div
+      className={`group relative overflow-hidden rounded-2xl border bg-surface/88 p-4 shadow-soft transition-all hover:-translate-y-0.5 hover:border-border hover:shadow-elevated ${
+        isOpenDesign ? 'border-accent/25' : 'border-border-subtle'
+      }`}
+    >
+      {isOpenDesign && (
+        <div
+          className="pointer-events-none absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-accent/70 to-transparent"
+          aria-hidden="true"
+        />
+      )}
+      <div className="flex items-start justify-between gap-3">
+        <div className="flex min-w-0 flex-1 gap-3">
+          <div
+            className={`mt-0.5 flex h-9 w-9 flex-shrink-0 items-center justify-center rounded-xl border ${
+              isOpenDesign
+                ? 'border-accent/25 bg-accent/10 text-accent'
+                : 'border-border-subtle bg-background/60 text-text-secondary'
+            }`}
+          >
+            <SkillIcon className="h-4 w-4" />
+          </div>
+          <div className="min-w-0 flex-1">
+            <div className="mb-1.5 flex min-w-0 flex-wrap items-center gap-2">
+              <h3 className="truncate font-medium text-text-primary">{skill.name}</h3>
+              {isOpenDesign && (
+                <span className="inline-flex items-center gap-1 rounded-full border border-accent/25 bg-accent/10 px-2 py-0.5 text-[10px] font-semibold uppercase tracking-[0.08em] text-accent">
+                  <Sparkles className="h-3 w-3" />
+                  Open Design
+                </span>
+              )}
+            </div>
             <span
-              className={`px-2 py-0.5 text-xs rounded ${
-                isBuiltin
-                  ? 'bg-accent/10 text-accent'
-                  : skill.type === 'mcp'
-                    ? 'bg-mcp/10 text-mcp'
-                    : 'bg-success/10 text-success'
-              }`}
+              className={`inline-flex rounded-md border px-2 py-0.5 text-[10.5px] font-semibold uppercase tracking-[0.06em] ${badgeTone}`}
             >
               {skill.type.toUpperCase()}
             </span>
+            {skill.description && (
+              <p className="mt-2 text-sm leading-5 text-text-muted line-clamp-2">
+                {skill.description}
+              </p>
+            )}
           </div>
-          {skill.description && (
-            <p className="text-sm text-text-muted ml-6 line-clamp-2">{skill.description}</p>
-          )}
         </div>
-        <div className="flex items-center gap-2">
+        <div className="flex flex-shrink-0 items-center gap-2">
           <button
             onClick={onToggleEnabled}
             disabled={isLoading}

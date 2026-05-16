@@ -26,7 +26,7 @@ export function SettingsGeneral() {
   const themeOptions = [
     { value: 'light' as const, label: t('general.themeLight') },
     { value: 'dark' as const, label: t('general.themeDark') },
-    { value: 'system' as const, label: t('general.themeSystem', 'System') },
+    { value: 'system' as const, label: t('general.themeSystem') },
   ];
 
   return (
@@ -74,7 +74,7 @@ export function SettingsGeneral() {
       {/* About */}
       {appVer && (
         <div className="pt-4 border-t border-border">
-          <p className="text-xs text-text-muted">Open Cowork v{appVer}</p>
+          <p className="text-xs text-text-muted">Nectar v{appVer}</p>
         </div>
       )}
     </div>

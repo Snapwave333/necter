@@ -1,70 +1,62 @@
-@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&family=Source+Serif+4:opsz,wght@8..60,400;8..60,500;8..60,600;8..60,700&display=swap');
-
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
+/* ==========================================================================
+   NECTER — Premium Depth System
+   Borders → Depth: blur, glow, shadow, transparency
+   ========================================================================== */
+
 @layer base {
-  /* Define CSS variables for theming */
   :root {
-    /* Dark theme (default) — Claude warm palette */
-    --color-background: #171614;
-    --color-background-secondary: #1d1b18;
-    --color-surface: #22201d;
-    --color-surface-hover: #2a2723;
-    --color-surface-active: #33302b;
-    --color-surface-muted: #1b1916;
-    --color-border: #34302a;
-    --color-border-muted: #2a2722;
-    --color-border-subtle: rgba(255, 245, 232, 0.07);
-    --color-mcp: #9d8abc;
-    --shadow-soft: 0 1px 4px rgba(0, 0, 0, 0.24);
-    --shadow-card: 0 1px 2px rgba(0, 0, 0, 0.22), 0 0 0 1px rgba(255, 245, 232, 0.03);
-    --shadow-elevated: 0 8px 24px rgba(0, 0, 0, 0.34), 0 0 0 1px rgba(255, 245, 232, 0.04);
-    --color-accent: #d67a52;
-    --color-accent-hover: #c56c46;
-    --color-accent-muted: rgba(214, 122, 82, 0.14);
-    --color-text-primary: #f1ece4;
-    --color-text-secondary: #b6ada2;
-    --color-text-muted: #8c8378;
+    --color-background: #0c0c0c;
+    --color-background-secondary: #111111;
+    --color-surface: #181818;
+    --color-surface-hover: #1f1f1f;
+    --color-surface-active: #272727;
+    --color-surface-muted: #141414;
+    --color-border: #2a2a2a;
+    --color-border-muted: #222222;
+    --color-border-subtle: rgba(255, 255, 255, 0.06);
+    --color-mcp: #a884d0;
+    --color-accent: #06b6d4;
+    --color-accent-hover: #0891b2;
+    --color-accent-muted: rgba(6, 182, 212, 0.14);
+    --color-text-primary: #f2f2f2;
+    --color-text-secondary: #949494;
+    --color-text-muted: #606060;
     --color-success: #22c55e;
     --color-warning: #eab308;
     --color-error: #ef4444;
   }
 
-  /* Light theme override — Claude warm cream */
   .light {
-    --color-background: #f5f3ed;
-    --color-background-secondary: #f0eee8;
-    --color-surface: #faf9f4;
-    --color-surface-hover: #f5f3ed;
-    --color-surface-active: #eceae4;
-    --color-surface-muted: #f2f0eb;
-    --color-border: #e2dfd9;
-    --color-border-muted: #e8e6e0;
-    --color-border-subtle: rgba(0, 0, 0, 0.05);
-    --color-mcp: #8570a6;
-    --shadow-soft: 0 1px 4px rgba(0, 0, 0, 0.04);
-    --shadow-card: 0 1px 3px rgba(0, 0, 0, 0.06), 0 1px 2px rgba(0, 0, 0, 0.04);
-    --shadow-elevated: 0 4px 12px rgba(0, 0, 0, 0.1);
-    --color-accent: #d97757;
-    --color-accent-hover: #c46849;
-    --color-accent-muted: #fef3ee;
-    --color-text-primary: #1a1a1a;
-    --color-text-secondary: #5c5c5c;
-    --color-text-muted: #8c8c8c;
+    --color-background: #f7f7f7;
+    --color-background-secondary: #f0f0f0;
+    --color-surface: #ffffff;
+    --color-surface-hover: #f5f5f5;
+    --color-surface-active: #ebebeb;
+    --color-surface-muted: #fafafa;
+    --color-border: #e2e2e2;
+    --color-border-muted: #e8e8e8;
+    --color-border-subtle: rgba(0, 0, 0, 0.06);
+    --color-mcp: #7c5fa8;
+    --color-accent: #0891b2;
+    --color-accent-hover: #0e7490;
+    --color-accent-muted: #ecfeff;
+    --color-text-primary: #0a0a0a;
+    --color-text-secondary: #555555;
+    --color-text-muted: #999999;
     --color-success: #16a34a;
     --color-warning: #ca8a04;
     --color-error: #dc2626;
   }
 
   * {
-    @apply border-border;
+    border-color: var(--color-border);
   }
 
-  html,
-  body,
-  #root {
+  html, body, #root {
     width: 100%;
     height: 100%;
     margin: 0;
@@ -81,79 +73,392 @@
     text-rendering: optimizeLegibility;
   }
 
-  /* Custom scrollbar — only on non-macOS platforms.
-     macOS uses native overlay scrollbars which are better. */
   @supports not (font: -apple-system-body) {
-    ::-webkit-scrollbar {
-      width: 6px;
-      height: 6px;
-    }
-
-    ::-webkit-scrollbar-track {
-      @apply bg-transparent;
-    }
-
-    ::-webkit-scrollbar-thumb {
-      @apply bg-border rounded-full;
-    }
-
-    ::-webkit-scrollbar-thumb:hover {
-      @apply bg-text-muted;
-    }
+    ::-webkit-scrollbar { width: 6px; height: 6px; }
+    ::-webkit-scrollbar-track { background: transparent; }
+    ::-webkit-scrollbar-thumb { background: var(--color-border); border-radius: 9999px; }
+    ::-webkit-scrollbar-thumb:hover { background: var(--color-text-muted); }
   }
-}
 
-@layer components {
-  /* Heading serif font — for titles and headings */
   .heading-serif {
     font-family: 'Source Serif 4', Georgia, serif;
   }
 
-  /* Button styles */
+  /* App shell — atmospheric gradient background */
+  .app-shell {
+    position: relative;
+    isolation: isolate;
+  }
+
+  .app-shell::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    z-index: -1;
+    pointer-events: none;
+    background:
+      linear-gradient(120deg, rgba(6,182,212,0.07) 0%, transparent 28%),
+      linear-gradient(240deg, rgba(139,92,246,0.05) 0%, transparent 28%),
+      linear-gradient(180deg, rgba(255,255,255,0.035) 0%, transparent 24%);
+    opacity: 0.88;
+  }
+
+  .light .app-shell::before {
+    background:
+      linear-gradient(120deg, rgba(8,145,178,0.06) 0%, transparent 34%),
+      linear-gradient(180deg, rgba(255,255,255,0.82) 0%, transparent 28%);
+    opacity: 0.86;
+  }
+
+  .logo-glow {
+    position: relative;
+    isolation: isolate;
+  }
+
+  .logo-glow::after {
+    content: '';
+    position: absolute;
+    inset: -80%;
+    background: radial-gradient(ellipse at center, rgba(6, 182, 212, 0.13) 0%, transparent 65%);
+    pointer-events: none;
+    z-index: -1;
+  }
+
+  .light .logo-glow::after {
+    background: radial-gradient(ellipse at center, rgba(8, 145, 178, 0.09) 0%, transparent 65%);
+  }
+}
+
+/* ==========================================================================
+   DEPTH SYSTEM — layered surfaces without borders
+   ========================================================================== */
+:root {
+  /* Depth layers */
+  --depth-1: 0 1px 3px rgba(0,0,0,0.4), 0 0 0 1px rgba(255,255,255,0.04);
+  --depth-2: 0 4px 16px rgba(0,0,0,0.5), 0 0 0 1px rgba(255,255,255,0.06);
+  --depth-3: 0 12px 40px rgba(0,0,0,0.6), 0 0 0 1px rgba(255,255,255,0.08);
+
+  /* Glass surfaces */
+  --surface-glass: rgba(255,255,255,0.03);
+  --surface-glass-hover: rgba(255,255,255,0.06);
+  --surface-glass-active: rgba(255,255,255,0.09);
+
+  /* Chromatic edge lighting */
+  --edge-cyan: rgba(6, 182, 212, 0.2);
+  --edge-cyan-strong: rgba(6, 182, 212, 0.5);
+  --edge-violet: rgba(139, 92, 246, 0.15);
+  --edge-violet-strong: rgba(139, 92, 246, 0.4);
+
+  /* Separators */
+  --separator: rgba(255,255,255,0.07);
+  --separator-subtle: rgba(255,255,255,0.04);
+
+  /* Glow presets */
+  --glow-cyan: 0 0 16px rgba(6,182,212,0.3), 0 0 40px rgba(6,182,212,0.1);
+  --glow-violet: 0 0 16px rgba(139,92,246,0.25), 0 0 40px rgba(139,92,246,0.08);
+
+  /* Atmospheric panels — dark depth without hard borders */
+  --panel-bg: rgba(255,255,255,0.025);
+  --panel-bg-hover: rgba(255,255,255,0.045);
+  --panel-bg-active: rgba(255,255,255,0.065);
+  --panel-border: rgba(255,255,255,0.055);
+
+  /* AI cockpit glow */
+  --glow-accent-sm: 0 0 8px rgba(6,182,212,0.25);
+  --glow-accent-md: 0 0 20px rgba(6,182,212,0.2), 0 0 60px rgba(6,182,212,0.06);
+  --glow-accent-lg: 0 0 30px rgba(6,182,212,0.3), 0 0 80px rgba(6,182,212,0.1);
+
+  /* Thinking / cognition states */
+  --cognition-idle: rgba(168,132,208,0.5);
+  --cognition-active: rgba(168,132,208,1);
+  --cognition-streaming: rgba(6,182,212,0.7);
+}
+
+/* ==========================================================================
+   TAILWIND COMPONENTS
+   ========================================================================== */
+@layer components {
   .btn {
-    @apply inline-flex items-center justify-center gap-2 px-4 py-2 rounded-xl font-medium transition-all duration-150;
+    @apply inline-flex items-center justify-center gap-2 px-4 py-2 rounded-xl font-medium;
     @apply focus:outline-none focus:ring-2 focus:ring-accent focus:ring-opacity-30;
+    transition: all 0.15s ease;
   }
 
   .btn-primary {
     @apply bg-accent text-white hover:bg-accent-hover;
-    @apply shadow-soft;
+    box-shadow: 0 1px 4px rgba(0,0,0,0.5);
   }
 
   .btn-secondary {
-    @apply bg-surface border border-border hover:bg-surface-hover text-text-primary;
+    background: var(--surface-glass);
+    border: 1px solid var(--separator);
+    @apply text-text-primary;
+  }
+  .btn-secondary:hover {
+    background: var(--surface-glass-hover);
+    box-shadow: var(--depth-1);
   }
 
   .btn-ghost {
     @apply bg-transparent hover:bg-surface-active text-text-secondary hover:text-text-primary;
   }
 
-  /* Input styles */
   .input {
-    @apply w-full px-4 py-3 rounded-xl bg-surface border border-border;
-    @apply text-text-primary placeholder:text-text-muted;
-    @apply focus:outline-none focus:border-accent focus:ring-2 focus:ring-accent focus:ring-opacity-30;
-    @apply transition-all duration-150;
+    @apply w-full px-4 py-3 rounded-xl bg-surface text-text-primary;
+    border: 1px solid var(--separator-subtle);
+    @apply placeholder:text-text-muted;
+    transition: all 0.2s ease;
+    box-shadow: var(--depth-1);
+  }
+  .input:focus {
+    outline: none;
+    border-color: transparent;
+    box-shadow: 0 0 0 2px var(--color-accent-muted), var(--depth-1);
   }
 
-  /* Card styles */
   .card {
-    @apply bg-surface rounded-2xl shadow-card border border-border-subtle;
+    background: linear-gradient(135deg, rgba(255,255,255,0.05) 0%, rgba(255,255,255,0.02) 100%);
+    border-radius: 16px;
+    box-shadow: var(--depth-1);
+    border: 1px solid var(--separator-subtle);
+    backdrop-filter: blur(12px);
   }
 
-  /* Tag/Chip styles - like the quick action buttons */
   .tag {
-    @apply inline-flex items-center gap-1.5 px-3 py-2 rounded-xl bg-surface border border-border;
+    @apply inline-flex items-center gap-1.5 px-3 py-2 rounded-xl bg-surface;
+    border: 1px solid var(--separator-subtle);
     @apply text-sm font-medium text-text-primary;
-    @apply hover:bg-surface-hover hover:shadow-soft cursor-pointer transition-all duration-150;
+    transition: all 0.15s ease;
+  }
+  .tag:hover {
+    background: var(--surface-glass-hover);
+    border-color: var(--edge-cyan);
   }
 
-  /* Badge styles */
   .badge {
     @apply inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium;
   }
+
+  /* Atmospheric panel — no hard borders, depth via shadow + subtle glow */
+  .panel {
+    background: var(--panel-bg);
+    border-radius: 16px;
+    box-shadow: var(--depth-1);
+    border: 1px solid var(--panel-border);
+    backdrop-filter: blur(16px);
+    transition: background 0.2s ease, box-shadow 0.2s ease;
+  }
+  .panel:hover {
+    background: var(--panel-bg-hover);
+    box-shadow: var(--depth-2);
+  }
+
+  /* Glass panel — stronger transparency */
+  .glass {
+    background: var(--surface-glass);
+    border: 1px solid var(--separator);
+    backdrop-filter: blur(20px);
+    transition: all 0.2s ease;
+  }
+  .glass:hover {
+    background: var(--surface-glass-hover);
+    border-color: rgba(255,255,255,0.08);
+  }
 }
 
+/* ==========================================================================
+   MESSAGE BUBBLES
+   ========================================================================== */
+@layer utilities {
+  /* User message — cyan glass, right-aligned, depth without hard border */
+  .message-user {
+    background: linear-gradient(135deg, rgba(6,182,212,0.14) 0%, rgba(6,182,212,0.05) 100%);
+    border-radius: 1.5rem;
+    box-shadow: var(--depth-2), inset 0 1px 0 rgba(255,255,255,0.08);
+    width: fit-content;
+    margin-left: auto;
+    border: 1px solid rgba(6,182,212,0.08);
+  }
+
+  /* Assistant message — warm layered glass, left-aligned radius */
+  .message-assistant {
+    background: linear-gradient(135deg, rgba(255,255,255,0.06) 0%, rgba(255,255,255,0.02) 100%);
+    border-radius: 1.25rem 1.25rem 1.25rem 0.25rem;
+    box-shadow: var(--depth-2), inset 0 1px 0 rgba(255,255,255,0.06);
+  }
+}
+
+/* ==========================================================================
+   KEYFRAME ANIMATIONS
+   ========================================================================== */
+@layer utilities {
+  @keyframes thinking-pulse {
+    0%, 100% { opacity: 0.35; transform: scale(0.85); }
+    50% { opacity: 1; transform: scale(1.05); }
+  }
+
+  @keyframes thinking-wave {
+    0%, 100% { transform: translateY(0); opacity: 0.4; }
+    50% { transform: translateY(-3px); opacity: 1; }
+  }
+
+  /* Streaming cognition dots — staggered wave animation */
+  .streaming-dot {
+    display: inline-block;
+    border-radius: 50%;
+    animation: thinking-wave 1.4s ease-in-out infinite;
+  }
+  .streaming-dot:nth-child(1) { background: var(--color-accent); animation-delay: 0s; }
+  .streaming-dot:nth-child(2) { background: rgba(6,182,212,0.7); animation-delay: 0.18s; }
+  .streaming-dot:nth-child(3) { background: rgba(6,182,212,0.4); animation-delay: 0.36s; }
+
+  /* Breathing idle animation for input bar */
+  @keyframes idle-breathe {
+    0%, 100% {
+      box-shadow: var(--depth-1), 0 0 0 1px rgba(255,255,255,0.04);
+    }
+    50% {
+      box-shadow: var(--depth-2), 0 0 24px rgba(6,182,212,0.06), 0 0 0 1px rgba(255,255,255,0.06);
+    }
+  }
+  .input-idle { animation: idle-breathe 4s ease-in-out infinite; }
+
+  /* Focus glow for input bar */
+  @keyframes input-focus-glow {
+    0% { box-shadow: var(--depth-2), 0 0 0 2px rgba(6,182,212,0.3), 0 0 30px rgba(6,182,212,0.08); }
+    100% { box-shadow: var(--depth-2), 0 0 0 2px rgba(6,182,212,0.4), 0 0 40px rgba(6,182,212,0.12); }
+  }
+
+  /* Cognition thinking progress bar */
+  @keyframes cognition-progress {
+    0% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+    100% { background-position: 0% 50%; }
+  }
+
+  /* Orb pulse — ambient AI presence indicator */
+  @keyframes orb-pulse {
+    0%, 100% { opacity: 0.6; transform: scale(0.95); }
+    50% { opacity: 1; transform: scale(1.05); }
+  }
+
+  /* Fade + slide in from below */
+  @keyframes panel-enter {
+    0% { opacity: 0; transform: translateY(12px); }
+    100% { opacity: 1; transform: translateY(0); }
+  }
+
+  /* Glow shimmer for active states */
+  @keyframes glow-shimmer {
+    0%, 100% { opacity: 0.7; }
+    50% { opacity: 1; }
+  }
+
+  /* Context panel model card glow */
+  @keyframes model-glow {
+    0%, 100% { box-shadow: 0 0 12px rgba(6,182,212,0.15), 0 0 0 1px rgba(6,182,212,0.1); }
+    50% { box-shadow: 0 0 24px rgba(6,182,212,0.25), 0 0 0 1px rgba(6,182,212,0.2); }
+  }
+}
+
+/* ==========================================================================
+   EDGE GLOW UTILITIES
+   ========================================================================== */
+@layer utilities {
+  .edge-glow-cyan {
+    box-shadow: inset 0 1px 0 var(--edge-cyan), var(--depth-1);
+  }
+
+  .edge-glow-violet {
+    box-shadow: inset 0 1px 0 var(--edge-violet), var(--depth-1);
+  }
+
+  .glow-cyan {
+    box-shadow: var(--glow-cyan);
+  }
+
+  .glow-violet {
+    box-shadow: var(--glow-violet);
+  }
+
+  /* AI cockpit active glow */
+  .glow-active {
+    animation: model-glow 3s ease-in-out infinite;
+  }
+
+  /* Input bar sacred focus state */
+  .input-glow {
+    animation: input-focus-glow 2s ease-in-out infinite alternate;
+  }
+
+  /* Cognition / thinking presence bar */
+  .cognition-bar {
+    height: 2px;
+    background: linear-gradient(90deg, var(--color-mcp), var(--color-accent), var(--color-mcp));
+    background-size: 200% 100%;
+    animation: cognition-progress 2.5s ease-in-out infinite;
+    border-radius: 9999px;
+  }
+}
+
+/* ==========================================================================
+   PROSE — Assistant message typography
+   ========================================================================== */
+@layer utilities {
+  .prose-chat {
+    font-family: 'Source Serif 4', Georgia, 'Times New Roman', serif;
+    font-size: 1.0625rem;
+    line-height: 1.625;
+    letter-spacing: -0.01em;
+  }
+
+  .prose-chat p { margin-bottom: 0.75rem; }
+  .prose-chat p:last-child { margin-bottom: 0; }
+  .prose-chat strong { font-weight: 600; }
+  .prose-chat em { font-style: italic; }
+  .prose-chat ul, .prose-chat ol { margin: 0.75rem 0; padding-left: 1.5rem; }
+  .prose-chat ul { list-style: disc; }
+  .prose-chat ul ul { list-style: circle; }
+  .prose-chat ul ul ul { list-style: square; }
+  .prose-chat ol { list-style: decimal; }
+  .prose-chat li { margin-bottom: 0.2rem; }
+  .prose-chat li > p { margin-top: 0; margin-bottom: 0; }
+  .prose-chat li p { margin-top: 0; margin-bottom: 0; }
+  .prose-chat li > ul, .prose-chat li > ol { margin-top: 0.35rem; margin-bottom: 0.35rem; }
+  .prose-chat h1, .prose-chat h2, .prose-chat h3, .prose-chat h4 {
+    font-family: 'Plus Jakarta Sans', system-ui, sans-serif;
+    font-weight: 600;
+    margin-top: 1.25rem;
+    margin-bottom: 0.5rem;
+    letter-spacing: -0.02em;
+  }
+  .prose-chat h1 { font-size: 1.3rem; }
+  .prose-chat h2 { font-size: 1.15rem; }
+  .prose-chat h3 { font-size: 1.05rem; }
+  .prose-chat h4 { font-size: 0.95rem; }
+  .prose-chat code { font-family: 'JetBrains Mono', monospace; font-size: 0.875em; }
+  .prose-chat pre { margin: 0.75rem 0; border-radius: 0.75rem; overflow: hidden; }
+  .prose-chat blockquote {
+    border-left: 3px solid var(--color-accent);
+    padding-left: 1rem;
+    margin: 0.75rem 0;
+    color: var(--color-text-secondary);
+  }
+  .prose-chat a { color: var(--color-accent); text-decoration: underline; text-underline-offset: 2px; }
+  .prose-chat a:hover { color: var(--color-accent-hover); }
+  .prose-chat hr { border: none; border-top: 1px solid var(--separator); margin: 1.25rem 0; }
+  .prose-chat table { width: 100%; border-collapse: collapse; margin: 0.75rem 0; }
+  .prose-chat th, .prose-chat td {
+    padding: 0.5rem 0.75rem;
+    border: 1px solid var(--separator);
+    text-align: left;
+  }
+  .prose-chat th { background: var(--color-surface-muted); font-weight: 600; }
+}
+
+/* ==========================================================================
+   TAILWIND ANIMATIONS
+   ========================================================================== */
 @layer utilities {
   /* Window drag region for custom titlebar */
   .titlebar-drag {
@@ -164,174 +469,5 @@
   .titlebar-no-drag {
     -webkit-app-region: no-drag;
     app-region: no-drag;
-  }
-
-  /* Message bubbles */
-  .message-user {
-    @apply bg-surface rounded-2xl border border-border-subtle;
-    width: fit-content;
-    margin-left: auto;
-  }
-
-  /* Prose styling for assistant messages - elegant serif font */
-  .prose-chat {
-    font-family: 'Source Serif 4', Georgia, 'Times New Roman', serif;
-    font-size: 1.0625rem;
-    line-height: 1.625;
-    letter-spacing: -0.01em;
-  }
-
-  .prose-chat p {
-    margin-bottom: 0.75rem;
-  }
-
-  .prose-chat p:last-child {
-    margin-bottom: 0;
-  }
-
-  .prose-chat strong {
-    font-weight: 600;
-  }
-
-  .prose-chat em {
-    font-style: italic;
-  }
-
-  .prose-chat ul, .prose-chat ol {
-    margin: 0.75rem 0;
-    padding-left: 1.5rem;
-  }
-
-  .prose-chat ul {
-    list-style: disc;
-    list-style-position: outside;
-  }
-
-  .prose-chat ul ul {
-    list-style: circle;
-  }
-
-  .prose-chat ul ul ul {
-    list-style: square;
-  }
-
-  .prose-chat ol {
-    list-style: decimal;
-    list-style-position: outside;
-  }
-
-  .prose-chat li {
-    margin-bottom: 0.2rem;
-  }
-
-  /* Tighten markdown loose-lists: avoid large gaps when li wraps content in <p> */
-  .prose-chat li > p {
-    margin-top: 0;
-    margin-bottom: 0;
-  }
-
-  .prose-chat li p {
-    margin-top: 0;
-    margin-bottom: 0;
-  }
-
-  .prose-chat li > ul,
-  .prose-chat li > ol {
-    margin-top: 0.35rem;
-    margin-bottom: 0.35rem;
-  }
-
-  .prose-chat h1, .prose-chat h2, .prose-chat h3, .prose-chat h4 {
-    font-family: 'Plus Jakarta Sans', system-ui, sans-serif;
-    font-weight: 600;
-    margin-top: 1.25rem;
-    margin-bottom: 0.5rem;
-  }
-
-  .prose-chat > :first-child {
-    margin-top: 0;
-  }
-
-  .prose-chat h1 { font-size: 1.5rem; }
-  .prose-chat h2 { font-size: 1.25rem; }
-  .prose-chat h3 { font-size: 1.125rem; }
-  .prose-chat h4 { font-size: 1rem; }
-
-  .prose-chat .katex-display {
-    margin: 1rem 0;
-    overflow-x: auto;
-    overflow-y: hidden;
-  }
-
-  .prose-chat .katex {
-    font-size: 1.1em;
-  }
-
-  /* Prevent long inline math from overflowing the container */
-  .prose-chat .katex-html {
-    overflow-x: auto;
-    overflow-y: hidden;
-  }
-
-  .prose-chat a {
-    color: theme('colors.accent.DEFAULT');
-    text-decoration-line: underline;
-    text-decoration-thickness: 0.08em;
-    text-underline-offset: 0.22em;
-    text-decoration-skip-ink: auto;
-  }
-
-  /* Some model outputs wrap citation links in ~...~; keep links readable */
-  .prose-chat del {
-    text-decoration: none;
-  }
-
-  .prose-chat del a {
-    text-decoration-line: underline;
-  }
-
-  .prose-chat blockquote {
-    margin: 0.75rem 0;
-    padding-left: 1rem;
-    border-left: 3px solid theme('colors.accent.DEFAULT / 40%');
-    color: theme('colors.text.secondary');
-  }
-
-  .prose-chat .footnotes {
-    margin-top: 1rem;
-    font-size: 0.875rem;
-    color: theme('colors.text.muted');
-  }
-
-  .prose-chat .footnotes ol {
-    padding-left: 1.25rem;
-  }
-
-  .prose-chat .footnotes li {
-    margin-bottom: 0.5rem;
-  }
-
-  .prose-chat .footnotes p {
-    margin: 0.25rem 0 0;
-  }
-
-  /* Code block */
-  .code-block {
-    @apply bg-surface-muted rounded-xl p-4 font-mono text-sm overflow-x-auto border border-border-subtle;
-  }
-
-  /* Override hljs theme background to use our code-block background */
-  .code-block .hljs,
-  .code-block code {
-    background: transparent;
-  }
-}
-
-/* Respect reduced motion preferences */
-@media (prefers-reduced-motion: reduce) {
-  *, *::before, *::after {
-    animation-duration: 0.01ms !important;
-    animation-iteration-count: 1 !important;
-    transition-duration: 0.01ms !important;
   }
 }

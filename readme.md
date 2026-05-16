@@ -1,8 +1,8 @@
 <p align="center">
-  <img src="resources/logo.png" alt="Open Cowork Logo" width="280" />
+  <img src="resources/logo.png" alt="Necter Logo" width="280" />
 </p>
 
-<h1 align="center">🚀 Open Cowork: Your Personal AI Agent Desktop App</h1>
+<h1 align="center">🚀 Necter: Your Personal AI Agent Desktop App</h1>
 
 <p align="center">
   • Open Source Claude Cowork • One-Click Install 
@@ -27,18 +27,18 @@
 
 ---
 
-Open Cowork is a free, open-source AI agent desktop application for Windows and macOS. It wraps Claude Code, OpenAI, Gemini, DeepSeek, and other AI models into a user-friendly GUI with one-click installation — no coding required. Key capabilities include VM-level sandbox isolation (WSL2 on Windows, Lima on macOS), a built-in Skills system for generating PPTX, DOCX, XLSX, and PDF documents, MCP (Model Context Protocol) integration for connecting to browsers, Notion, and other desktop apps, GUI automation via computer use, and remote control through Feishu (Lark) and Slack. Open Cowork is the open-source implementation of Claude Cowork, designed to make AI-powered desktop automation accessible to everyone.
+Necter is a free, open-source AI agent desktop application for Windows and macOS. It wraps Claude Code, OpenAI, Gemini, DeepSeek, and other AI models into a user-friendly GUI with one-click installation — no coding required. Key capabilities include VM-level sandbox isolation (WSL2 on Windows, Lima on macOS), a built-in Skills system for generating PPTX, DOCX, XLSX, and PDF documents, MCP (Model Context Protocol) integration for connecting to browsers, Notion, and other desktop apps, GUI automation via computer use, and remote control through Feishu (Lark) and Slack. Necter is the open-source implementation of Claude Cowork, designed to make AI-powered desktop automation accessible to everyone.
 
 ---
 
 ## 📖 Introduction
 
-**Open Cowork** is an open-source implementation of **Claude Cowork**, with one-click installers for **Windows** and **macOS**—no coding required.
+**Necter** is an open-source implementation of **Claude Cowork**, with one-click installers for **Windows** and **macOS**—no coding required.
 
 It provides a sandboxed workspace where AI can manage files, generate professional outputs (PPTX, DOCX, XLSX, etc.) through our built-in **Skills** system, and **connect to desktop apps via MCP** (browser, Notion, etc.) for better collaboration.
 
 > [!WARNING]
-> **Disclaimer**: Open Cowork is an AI collaboration tool. Please exercise caution with its operations, especially when authorizing file modifications or deletions. We support VM-based sandbox isolation, but some operations may still carry risks.
+> **Disclaimer**: Necter is an AI collaboration tool. Please exercise caution with its operations, especially when authorizing file modifications or deletions. We support VM-based sandbox isolation, but some operations may still carry risks.
 
 ---
 
@@ -50,14 +50,16 @@ It provides a sandboxed workspace where AI can manage files, generate profession
 | ------------- | ------------ | -------------- | ------------- |
 | Claude Cowork | ✓            | ✗              | ✗             |
 | OpenClaw      | ✓            | ✓              | ✗             |
-| OpenCowork    | ✓            | ✓              | ✓             |
+| Necter    | ✓            | ✓              | ✓             |
 
 - **One-Click Install, Ready to Use**: Pre-built installers for Windows and macOS, no environment setup needed—just download and start using.
+- **Real-time Voice Orb**: WebGL status indicator in the header with 8-state color map (idle=cyan, thinking=blue, tool=green, search=yellow, speaking=magenta, error=orange, memory=white, coding=purple) — driven by trace events, with per-instance mic mute and TTS mute controls.
 - **Flexible Model Support**: Supports **Claude**, **OpenAI-compatible APIs**, and Chinese models like **GLM**, **MiniMax**, **Kimi**. Use your OpenRouter, Anthropic, or other API keys with flexible configuration. More models coming soon!
 - **Remote Control**: Connect to collaboration platforms like **Feishu (Lark)** and other remote services to automate workflows and cross-platform operations.
 - **GUI Operation**: Control and interact with various desktop GUI applications on your computer. **Recommended model: Gemini-3-Pro** for optimal GUI understanding and control.
 - **Smart File Management**: Read, write, and organize files within your workspace.
 - **Skills System**: Built-in workflows for PPTX, DOCX, PDF, XLSX generation and processing. **Supports custom skill creation and deletion.**
+- **Open Design Integration**: Bundles the `nexu-io/open-design` workflow as a built-in skill with local design-system references for prototypes, dashboards, landing pages, visual critiques, and `DESIGN.md` authoring.
 - **MCP External Service Support**: Integrate browser, Notion, custom apps and more through **MCP Connectors** to extend AI capabilities.
 - **Multimodal Input**: Drag & drop files and images directly into the chat input for seamless multimodal interaction.
 - **Real-time Trace**: Watch AI reasoning and tool execution in the Trace Panel.
@@ -69,7 +71,7 @@ It provides a sandboxed workspace where AI can manage files, generate profession
 
 ## 🎬 Demo
 
-See Open Cowork in action:
+See Necter in action:
 
 ### 1. Folder Organization & Cleanup 📂
 
@@ -100,15 +102,15 @@ https://github.com/user-attachments/assets/05a703de-c0f5-407b-9a43-18b6a172fd74
 ### Option 1: Homebrew (macOS, Recommended)
 
 ```bash
-brew tap OpenCoworkAI/tap
-brew install --cask --no-quarantine open-cowork
+brew tap NecterAI/tap
+brew install --cask --no-quarantine necter
 ```
 
 > The `--no-quarantine` flag bypasses macOS Gatekeeper, so you won't see the "Apple cannot verify this app" warning.
 
 ### Option 2: Download Installer
 
-Get the latest version from our [Releases Page](https://github.com/OpenCoworkAI/open-cowork/releases).
+Get the latest version from our [Releases Page](https://github.com/NecterAI/necter/releases).
 
 | Platform                  | File Type |
 | ------------------------- | --------- |
@@ -120,8 +122,8 @@ Get the latest version from our [Releases Page](https://github.com/OpenCoworkAI/
 For developers who want to contribute or modify the codebase:
 
 ```bash
-git clone https://github.com/OpenCoworkAI/open-cowork.git
-cd open-cowork
+git clone https://github.com/NecterAI/necter.git
+cd necter
 npm install
 npm run rebuild
 npm run dev
@@ -129,9 +131,27 @@ npm run dev
 
 To build the installer locally: `npm run build`
 
+### Open Design Skill Flow
+
+Necter includes a local Open Design integration for artifact-first design
+work. The built-in `open-design` skill is packaged with Open Design's design
+system library, copied into WSL2/Lima sandboxes with the rest of the built-in
+skills, and exposed from the welcome screen as **Open Design prototype**.
+
+```mermaid
+flowchart LR
+  Brief["Design brief"] --> Skill["open-design skill"]
+  Skill --> Systems["Bundled DESIGN.md library"]
+  Systems --> Agent["Agent implementation"]
+  Agent --> Output["Prototype, GUI polish, or DESIGN.md"]
+```
+
+See [`docs/open-design-integration.md`](docs/open-design-integration.md) for the
+full runtime and packaging diagrams.
+
 ### Security Configuration: 🔒 Sandbox Support
 
-Open Cowork provides **multi-level sandbox protection** to keep your system safe:
+Necter provides **multi-level sandbox protection** to keep your system safe:
 
 | Level        | Platform | Technology | Description                                    |
 | ------------ | -------- | ---------- | ---------------------------------------------- |
@@ -152,7 +172,7 @@ Open Cowork provides **multi-level sandbox protection** to keep your system safe
 
 ```bash
 brew install lima
-# Open Cowork will automatically create and manage a 'claude-sandbox' VM
+# Necter will automatically create and manage a 'claude-sandbox' VM
 ```
 
 ---
@@ -190,7 +210,7 @@ You need an API key to power the agent. We support **OpenRouter**, **Anthropic**
 
 1.  **macOS Installation**: If you downloaded the DMG directly (not via Homebrew) and see a security warning, go to **System Settings > Privacy & Security** and click **Open Anyway**. Or install via Homebrew to avoid this entirely:
     ```bash
-    brew tap OpenCoworkAI/tap && brew install --cask --no-quarantine open-cowork
+    brew tap NecterAI/tap && brew install --cask --no-quarantine necter
     ```
 2.  **Network Access**: For tools like `WebSearch`, you may need to enable "Virtual Network Interface" (TUN Mode) in your proxy settings to ensure connectivity.
 3.  **Notion Connector**: Besides setting the integration token, you also need to add connections in a root page. See https://www.notion.com/help/add-and-manage-connections-with-the-api for more details.
@@ -201,7 +221,7 @@ You need an API key to power the agent. We support **OpenRouter**, **Anthropic**
 
 ## 🧰 Skills Library
 
-Open Cowork ships with built-in skills under `.claude/skills/`, and supports user-added or custom skills, including:
+Necter ships with built-in skills under `.claude/skills/`, and supports user-added or custom skills, including:
 
 - `pptx` for PowerPoint generation
 - `docx` for Word document processing
@@ -214,10 +234,11 @@ Open Cowork ships with built-in skills under `.claude/skills/`, and supports use
 ## 🏗️ Architecture
 
 ```
-open-cowork/
+necter/
 ├── src/
 │   ├── main/                    # Electron Main Process (Node.js)
-│   │   ├── index.ts             # Main entry point
+│   │   ├── index.ts             # Main entry point + IPC handlers
+│   │   ├── whisper-worker.py    # faster-whisper STT worker (persistent)
 │   │   ├── claude/              # Agent SDK & Runner
 │   │   │   └── agent-runner.ts  # AI agent execution logic
 │   │   ├── config/              # Configuration management
@@ -236,26 +257,31 @@ open-cowork/
 │   │   └── tools/               # Tool execution
 │   │       └── tool-executor.ts # Tool call handling
 │   ├── preload/                 # Electron preload scripts
-│   │   └── index.ts             # Context bridge setup
+│   │   └── index.ts             # Context bridge (voice.speak, voice.transcribe)
 │   └── renderer/                # Frontend UI (React + Tailwind)
 │       ├── App.tsx              # Root component
 │       ├── main.tsx             # React entry point
 │       ├── components/          # UI Components
 │       │   ├── ChatView.tsx     # Main chat interface
 │       │   ├── ConfigModal.tsx  # Settings dialog
-│       │   ├── ContextPanel.tsx # File context display
+│       │   ├── ContextPanel.tsx # AI cockpit — context, MCP, artifacts
 │       │   ├── MessageCard.tsx  # Chat message component
+│       │   ├── OrbCanvas.tsx    # WebGL status orb (8-state color map)
+│       │   ├── MuteControls.tsx # Mic + TTS mute buttons
 │       │   ├── PermissionDialog.tsx
-│       │   ├── Sidebar.tsx      # Navigation sidebar
+│       │   ├── Sidebar.tsx      # Navigation sidebar + session list
 │       │   ├── Titlebar.tsx     # Custom window titlebar
 │       │   ├── TracePanel.tsx   # AI reasoning trace
+│       │   ├── VoiceButton.tsx  # Push-to-talk + auto-speak
 │       │   └── WelcomeView.tsx  # Onboarding screen
 │       ├── hooks/               # Custom React hooks
-│       │   └── useIPC.ts        # IPC communication hook
+│       │   ├── useIPC.ts        # IPC communication hook
+│       │   ├── useEdgeTTS.ts    # Edge-TTS voice synthesis
+│       │   └── useOrb.ts        # Orb state machine (trace → orb state)
 │       ├── store/               # State management
 │       │   └── index.ts
 │       ├── styles/              # CSS styles
-│       │   └── globals.css
+│       │   └── globals.css      # Design tokens, keyframes, glass utilities
 │       ├── types/               # TypeScript types
 │       │   └── index.ts
 │       └── utils/               # Utility functions
@@ -286,35 +312,35 @@ See our full **[ROADMAP.md](ROADMAP.md)** for detailed plans.
 
 ## ❓ FAQ
 
-**What is Open Cowork?**
-Open Cowork is a free, open-source desktop application that provides a local AI agent workspace. It wraps AI models (Claude, GPT, Gemini, DeepSeek, etc.) into a GUI with one-click installers for Windows and macOS — no terminal or coding knowledge required.
+**What is Necter?**
+Necter is a free, open-source desktop application that provides a local AI agent workspace. It wraps AI models (Claude, GPT, Gemini, DeepSeek, etc.) into a GUI with one-click installers for Windows and macOS — no terminal or coding knowledge required.
 
-**How is Open Cowork different from Claude Cowork?**
-Open Cowork is the open-source implementation of Claude Cowork. It adds multi-model support (not just Claude), GUI automation via computer use, remote control through Feishu/Slack, and VM-level sandbox isolation. See the [feature comparison table](#features) for details.
+**How is Necter different from Claude Cowork?**
+Necter is the open-source implementation of Claude Cowork. It adds multi-model support (not just Claude), GUI automation via computer use, remote control through Feishu/Slack, and VM-level sandbox isolation. See the [feature comparison table](#features) for details.
 
-**What AI models does Open Cowork support?**
+**What AI models does Necter support?**
 Claude (via Anthropic or OpenRouter), OpenAI-compatible APIs, and Chinese models including GLM (Zhipu AI), MiniMax, and Kimi. Any provider offering an OpenAI-compatible API endpoint can be configured.
 
-**Is Open Cowork free?**
-Yes. Open Cowork itself is completely free and open-source under the MIT license. You only need to pay for the AI model API usage from your chosen provider.
+**Is Necter free?**
+Yes. Necter itself is completely free and open-source under the MIT license. You only need to pay for the AI model API usage from your chosen provider.
 
-**Does Open Cowork work on Linux?**
-Currently, Open Cowork provides pre-built installers for Windows and macOS only. Linux users can build from source — see the [Build from Source](#installation) section.
+**Does Necter work on Linux?**
+Currently, Necter provides pre-built installers for Windows and macOS only. Linux users can build from source — see the [Build from Source](#installation) section.
 
 **How does sandbox isolation work?**
-Open Cowork offers multi-level protection: basic path-based restrictions on all platforms, and enhanced VM-level isolation using WSL2 (Windows) or Lima (macOS). When a VM is available, all commands execute inside an isolated Linux environment, protecting your host system.
+Necter offers multi-level protection: basic path-based restrictions on all platforms, and enhanced VM-level isolation using WSL2 (Windows) or Lima (macOS). When a VM is available, all commands execute inside an isolated Linux environment, protecting your host system.
 
 **What are Skills and how do I create custom ones?**
-Skills are built-in workflows for specific tasks like generating PPTX, DOCX, PDF, or XLSX files. Open Cowork ships with default skills under `.claude/skills/` and includes a `skill-creator` tool to help you build your own custom skills.
+Skills are built-in workflows for specific tasks like generating PPTX, DOCX, PDF, or XLSX files. Necter ships with default skills under `.claude/skills/` and includes a `skill-creator` tool to help you build your own custom skills.
 
 **What is MCP and how does it work?**
-MCP (Model Context Protocol) lets AI connect to external tools and services. Open Cowork supports MCP connectors for browsers, Notion, and other desktop apps — extending the AI's capabilities beyond just file management and code.
+MCP (Model Context Protocol) lets AI connect to external tools and services. Necter supports MCP connectors for browsers, Notion, and other desktop apps — extending the AI's capabilities beyond just file management and code.
 
 **How do I set up remote control via Feishu or Slack?**
-Open Cowork supports remote control through Feishu (Lark) and Slack integration, allowing you to send commands and receive results from collaboration platforms. Check the app settings for remote control configuration.
+Necter supports remote control through Feishu (Lark) and Slack integration, allowing you to send commands and receive results from collaboration platforms. Check the app settings for remote control configuration.
 
-**Is my data safe? Does Open Cowork send data to external servers?**
-Open Cowork runs locally on your machine. Your files stay in your workspace. The only external communication is with the AI model API you configure (e.g., Anthropic, OpenRouter). No data is sent to Open Cowork servers.
+**Is my data safe? Does Necter send data to external servers?**
+Necter runs locally on your machine. Your files stay in your workspace. The only external communication is with the AI model API you configure (e.g., Anthropic, OpenRouter). No data is sent to Necter servers.
 
 ---
 
@@ -343,10 +369,10 @@ Join our community for support and discussion:
 
 ## 📄 License
 
-MIT © Open Cowork Team
+MIT © Necter Team
 
 ---
 
 <p align="center">
-  Made with ❤️ by the Open Cowork Team with the help of opus4.5
+  Made with ❤️ by the Necter Team with the help of opus4.5
 </p>

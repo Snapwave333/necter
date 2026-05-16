@@ -15,7 +15,9 @@
 import { app, BrowserWindow, ipcMain, dialog, shell, Menu, nativeTheme, Tray } from 'electron';
 import { join, resolve, dirname, isAbsolute, basename } from 'path';
 import * as fs from 'fs';
-import { execFileSync } from 'child_process';
+import { execFileSync, spawn } from 'child_process';
+import * as os from 'os';
+import { randomUUID } from 'crypto';
 import { config } from 'dotenv';
 import { initDatabase, closeDatabase } from './db/database';
 import { SessionManager } from './session/session-manager';
@@ -24,6 +26,7 @@ import { PluginCatalogService } from './skills/plugin-catalog-service';
 import { PluginRuntimeService } from './skills/plugin-runtime-service';
 import { MemoryService } from './memory/memory-service';
 import { MemoryExtension } from './memory/memory-extension';
+import { MemoryAgentExtension } from './extensions/memory-agent-extension';
 import { AgentRuntimeExtensionManager } from './extensions/agent-runtime-extension-manager';
 import {
   configStore,
@@ -308,7 +311,7 @@ function setupTray() {
   }
 
   tray = new Tray(resolvedIconPath);
-  tray.setToolTip('Open Cowork');
+  tray.setToolTip('Necter');
 
   const contextMenu = Menu.buildFromTemplate([
     {
@@ -781,6 +784,86 @@ function sendToRenderer(event: ServerEvent) {
   }
 }
 
+// ============================================================================
+// Whisper subprocess state (faster-whisper worker)
+// ============================================================================
+let whisperProcess: ReturnType<typeof spawn> | null = null;
+let whisperReady = false;
+const whisperCallbacks = new Map<string, { resolve: (text: string) => void; reject: (err: Error) => void }>();
+
+function initWhisperProcess(): void {
+  const pythonPath = 'C:\\Users\\chrom\\AppData\\Local\\Programs\\Python\\Python311\\python.exe';
+  const workerScript = join(__dirname, 'whisper-worker.py');
+
+  whisperProcess = spawn(pythonPath, [workerScript], {
+    stdio: ['pipe', 'pipe', 'pipe'],
+    windowsHide: true,
+  });
+
+  whisperProcess.stdout?.setEncoding('utf8');
+  whisperProcess.stderr?.on('data', (chunk: string) => {
+    log('[WhisperWorker] stderr:', chunk.trim());
+  });
+
+  whisperProcess.stdout?.on('data', (chunk: string) => {
+    const lines = chunk.toString().split('\n').filter((l: string) => l.trim());
+    for (const line of lines) {
+      if (line === 'READY') {
+        whisperReady = true;
+        log('[WhisperWorker] ready');
+        continue;
+      }
+      try {
+        const msg = JSON.parse(line) as { id: string; text?: string; error?: string };
+        const cb = whisperCallbacks.get(msg.id);
+        if (cb) {
+          whisperCallbacks.delete(msg.id);
+          if (msg.error) {
+            cb.reject(new Error(msg.error));
+          } else {
+            cb.resolve(msg.text ?? '');
+          }
+        }
+      } catch {
+        // ignore parse errors
+      }
+    }
+  });
+
+  whisperProcess.on('exit', (code: number | null, signal: string | null) => {
+    log(`[WhisperWorker] exited code=${code} signal=${signal}`);
+    whisperReady = false;
+    whisperProcess = null;
+    // Reject all pending callbacks
+    for (const [, cb] of whisperCallbacks) {
+      cb.reject(new Error('Whisper worker exited unexpectedly'));
+    }
+    whisperCallbacks.clear();
+  });
+
+  whisperProcess.on('error', (err: Error) => {
+    log('[WhisperWorker] error:', err.message);
+    whisperReady = false;
+  });
+}
+
+function whisperTranscribe(audioPath: string): Promise<string> {
+  return new Promise((resolve, reject) => {
+    if (!whisperProcess || !whisperProcess.stdin) {
+      return reject(new Error('Whisper worker not running'));
+    }
+    const id = randomUUID();
+    whisperCallbacks.set(id, { resolve, reject });
+    const payload = JSON.stringify({ id, audio_path: audioPath }) + '\n';
+    whisperProcess.stdin.write(payload, (err: Error | null) => {
+      if (err) {
+        whisperCallbacks.delete(id);
+        reject(err);
+      }
+    });
+  });
+}
+
 // Initialize app
 app
   .whenReady()
@@ -807,7 +890,7 @@ app
     setDevLogsEnabled(enableDevLogs);
 
     // Log environment variables for debugging
-    log('=== Open Cowork Starting ===');
+    log('=== Necter Starting ===');
     log('Config file:', configStore.getPath());
     log('Is configured:', configStore.isConfigured());
     log('[Runtime] Using pi-coding-agent SDK for all providers');
@@ -832,10 +915,14 @@ app
     // Initialize database
     const db = initDatabase();
 
+    // Initialize whisper worker subprocess
+    initWhisperProcess();
+
     pluginRuntimeService = new PluginRuntimeService(new PluginCatalogService());
     memoryService = new MemoryService(db);
     const extensionManager = new AgentRuntimeExtensionManager([
       new MemoryExtension(memoryService),
+      new MemoryAgentExtension(memoryService),
     ]);
 
     // Initialize session manager before creating an interactive window.
@@ -1007,7 +1094,7 @@ app
   .catch((error) => {
     logError('[App] Startup failed:', error);
     const message = error instanceof Error ? error.message : 'Unknown startup error';
-    dialog.showErrorBox('Open Cowork 启动失败', `${message}\n\n请查看日志获取更多信息。`);
+    dialog.showErrorBox('Necter 启动失败', `${message}\n\n请查看日志获取更多信息。`);
     app.quit();
   });
 
@@ -2100,7 +2187,7 @@ ipcMain.handle('logs.export', async () => {
     // Show save dialog
     const result = await dialog.showSaveDialog(mainWindow!, {
       title: 'Export Logs',
-      defaultPath: `opencowork-logs-${new Date().toISOString().split('T')[0]}.zip`,
+      defaultPath: `necter-logs-${new Date().toISOString().split('T')[0]}.zip`,
       filters: [
         { name: 'ZIP Archive', extensions: ['zip'] },
         { name: 'All Files', extensions: ['*'] },
@@ -2177,7 +2264,7 @@ ipcMain.handle('logs.export', async () => {
       });
       archive.append(
         [
-          'Open Cowork diagnostic bundle',
+          'Necter diagnostic bundle',
           `Exported at: ${diagnosticsSummary.exportedAt}`,
           '',
           'Included files:',
@@ -2796,3 +2883,76 @@ async function handleClientEvent(event: ClientEvent): Promise<unknown> {
       return null;
   }
 }
+
+// ============================================================================
+// Voice IPC — edge-tts synthesis + Whisper transcription
+// ============================================================================
+
+ipcMain.handle('voice.speak', async (_event, text: string, voice?: string): Promise<ArrayBuffer> => {
+  const tmpDir = os.tmpdir();
+  const mediaPath = join(tmpDir, `edge-tts-${randomUUID()}.mp3`);
+
+  return new Promise((resolve, reject) => {
+    const child = spawn('edge-tts', [
+      '--text',
+      text,
+      '--voice',
+      voice || 'en-US-AriaNeural',
+      '--write-media',
+      mediaPath,
+    ]);
+
+    let stderr = '';
+    child.stderr.on('data', (chunk) => {
+      stderr += chunk.toString();
+    });
+
+    child.on('close', (code) => {
+      if (code !== 0) {
+        reject(new Error(`edge-tts exited with code ${code}: ${stderr}`));
+        return;
+      }
+
+      try {
+        const buffer = fs.readFileSync(mediaPath);
+        // Clean up temp file
+        try {
+          fs.unlinkSync(mediaPath);
+        } catch {
+          // Ignore cleanup errors
+        }
+        resolve(buffer.buffer.slice(buffer.byteOffset, buffer.byteOffset + buffer.byteLength));
+      } catch (readErr) {
+        reject(new Error(`Failed to read edge-tts output: ${readErr}`));
+      }
+    });
+
+    child.on('error', (err) => {
+      reject(new Error(`edge-tts spawn failed: ${err.message}`));
+    });
+  });
+});
+
+ipcMain.handle(
+  'voice.transcribe',
+  async (_event, audioBuffer: ArrayBuffer, mimeType: string): Promise<string> => {
+    // Write audio to a temp file with the appropriate extension
+    const ext = mimeType.includes('ogg') ? 'ogg' : mimeType.includes('mp4') ? 'mp4' : 'webm';
+    const tmpDir = os.tmpdir();
+    const audioPath = join(tmpDir, `whisper-${randomUUID()}.${ext}`);
+    fs.writeFileSync(audioPath, Buffer.from(audioBuffer));
+
+    try {
+      return await whisperTranscribe(audioPath);
+    } finally {
+      // Clean up temp file after worker processes it (worker also deletes it, but clean up here too)
+      try {
+        if (fs.existsSync(audioPath)) {
+          fs.unlinkSync(audioPath);
+        }
+      } catch {
+        // Ignore cleanup errors
+      }
+    }
+  }
+);

@@ -167,7 +167,7 @@ function App() {
   const showSandboxSetup = sandboxSetupProgress && !isSandboxSetupComplete;
 
   return (
-    <div className="h-full w-full min-h-0 flex flex-col overflow-hidden bg-background">
+    <div className="app-shell h-full w-full min-h-0 flex flex-col overflow-hidden bg-background">
       {/* Titlebar - draggable region */}
       <Titlebar />
 
@@ -179,7 +179,7 @@ function App() {
         </PanelErrorBoundary>
 
         {/* Main Content Area */}
-        <main className="flex-1 min-h-0 min-w-0 flex flex-col overflow-hidden bg-background">
+        <main className="relative z-0 flex-1 min-h-0 min-w-0 flex flex-col overflow-hidden bg-background/88">
           {showSettings ? (
             <PanelErrorBoundary
               name="SettingsPanel"

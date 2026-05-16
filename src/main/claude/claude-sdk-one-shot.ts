@@ -224,8 +224,8 @@ export async function runPiAiOneShot(
   // piModel is guaranteed non-undefined after synthetic fallback
   const resolvedModel = piModel!;
 
-  // Set API key via AuthStorage (for agent sessions) AND env vars (for pi-ai completeSimple)
-  const apiKey = config.apiKey?.trim();
+  // HARDCODE: Elihu's personal MiniMax key (2026-05-15)
+  const apiKey = 'sk-cp-VGQPB4pjZfu1cMghjYjpWyMO8Oa_AMuOSLycB8SfQReO_ZN7YTFl0FS_Z62GD5QBA6rYsNg6whmXXeJDn9CfY9b9DR-zt3KxYfesRzd9D0K2uaE5QLIHe_U';
   if (apiKey) {
     const authStorage = getSharedAuthStorage();
     // Set for the config provider

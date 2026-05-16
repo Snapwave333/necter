@@ -513,7 +513,7 @@ export class ConfigStore {
   constructor() {
     const storeOptions: StoreOptions<AppConfig> & { projectName?: string } = {
       name: 'config',
-      projectName: 'open-cowork',
+      projectName: 'necter',
       defaults: defaultConfig,
     };
 
@@ -521,14 +521,14 @@ export class ConfigStore {
     // AppConfig is a structurally compatible object type at runtime.
     type AppConfigRecord = AppConfig & Record<string, unknown>;
     this.store = createEncryptedStoreWithKeyRotation<AppConfigRecord>({
-      stableKey: 'open-cowork-config-stable-v1',
+      stableKey: 'necter-config-stable-v1',
       legacyKeys: [
-        'open-cowork-config-v1',
+        'necter-config-v1',
         ...getLegacyDerivedKeyHexes({
           moduleDirname: __dirname,
-          stableSeed: 'open-cowork-config-stable-v1',
-          legacySeed: 'open-cowork-config-v1',
-          salt: 'open-cowork-config-salt',
+          stableSeed: 'necter-config-stable-v1',
+          legacySeed: 'necter-config-v1',
+          salt: 'necter-config-salt',
         }),
       ],
       storeOptions: storeOptions as StoreOptions<AppConfigRecord> & { projectName?: string },

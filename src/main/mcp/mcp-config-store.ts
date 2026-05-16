@@ -67,7 +67,7 @@ class MCPConfigStore {
   constructor() {
     const storeOptions: StoreOptions<{ servers: MCPServerConfig[] }> & { projectName?: string } = {
       name: 'mcp-config',
-      projectName: 'open-cowork',
+      projectName: 'necter',
       defaults: {
         servers: [],
       },

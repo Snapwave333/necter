@@ -5,10 +5,10 @@ import path from 'node:path';
 const welcomeViewPath = path.resolve(process.cwd(), 'src/renderer/components/WelcomeView.tsx');
 
 describe('WelcomeView Claude-style layout', () => {
-  it('uses a narrower editorial landing column with Open Cowork eyebrow', () => {
+  it('uses a narrower editorial landing column with the Nectar wordmark', () => {
     const source = fs.readFileSync(welcomeViewPath, 'utf8');
     expect(source).toContain('max-w-[840px]');
-    expect(source).toContain('Open Cowork');
+    expect(source).toContain('nectarLockup');
   });
 
   it('uses a softer rounded composer shell instead of the previous generic card class', () => {
@@ -17,9 +17,21 @@ describe('WelcomeView Claude-style layout', () => {
     expect(source).toContain('shadow-soft');
   });
 
+  it('keeps welcome actions responsive on narrow screens', () => {
+    const source = fs.readFileSync(welcomeViewPath, 'utf8');
+    expect(source).toContain('sm:flex-row sm:items-center sm:justify-between');
+    expect(source).toContain('max-w-[13rem] truncate');
+  });
+
+  it('surfaces Open Design as a first-class quick action', () => {
+    const source = fs.readFileSync(welcomeViewPath, 'utf8');
+    expect(source).toContain("id: 'open-design'");
+    expect(source).toContain("t('welcome.quickPromptOpenDesign')");
+  });
+
   it('shows an inline API setup hint on the welcome screen when config is missing', () => {
     const source = fs.readFileSync(welcomeViewPath, 'utf8');
-    expect(source).toContain("!isConfigured && (");
+    expect(source).toContain('!isConfigured && (');
     expect(source).toContain("t('welcome.apiNotConfigured')");
     expect(source).toContain("setSettingsTab('api');");
     expect(source).toContain('setShowSettings(true);');

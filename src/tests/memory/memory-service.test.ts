@@ -48,7 +48,7 @@ vi.mock('electron', () => ({
     isPackaged: false,
     getPath: () => '/tmp',
     getVersion: () => '0.0.0-test',
-    getAppPath: () => '/tmp/open-cowork-test-app',
+    getAppPath: () => '/tmp/necter-test-app',
   },
 }));
 
@@ -331,7 +331,7 @@ describe('MemoryService', () => {
   let storageRoot: string;
 
   beforeEach(() => {
-    storageRoot = fs.mkdtempSync(path.join(os.tmpdir(), 'open-cowork-memory-'));
+    storageRoot = fs.mkdtempSync(path.join(os.tmpdir(), 'necter-memory-'));
     rawDb = new Database(':memory:');
     createSchema(rawDb);
     db = createDatabaseInstance(rawDb);
@@ -633,7 +633,7 @@ describe('MemoryService', () => {
       ]),
     });
 
-    const outsideDir = fs.mkdtempSync(path.join(os.tmpdir(), 'open-cowork-memory-outside-'));
+    const outsideDir = fs.mkdtempSync(path.join(os.tmpdir(), 'necter-memory-outside-'));
     const outsideFile = path.join(outsideDir, 'secret.json');
     fs.writeFileSync(outsideFile, '{"secret":true}', 'utf8');
 
@@ -647,7 +647,7 @@ describe('MemoryService', () => {
   });
 
   it('rejects arbitrary local files even if storageRoot is configured too broadly', () => {
-    const outsideDir = fs.mkdtempSync(path.join(os.tmpdir(), 'open-cowork-memory-broad-root-'));
+    const outsideDir = fs.mkdtempSync(path.join(os.tmpdir(), 'necter-memory-broad-root-'));
     const outsideFile = path.join(outsideDir, 'arbitrary.json');
     fs.writeFileSync(outsideFile, '{"secret":true}', 'utf8');
 
@@ -684,7 +684,7 @@ describe('MemoryService', () => {
 
   it('rejects evalArtifactsRoot values that escape storageRoot before rebuildAll can delete them', async () => {
     const outsideDir = fs.mkdtempSync(
-      path.join(os.tmpdir(), 'open-cowork-memory-artifacts-escape-')
+      path.join(os.tmpdir(), 'necter-memory-artifacts-escape-')
     );
     const markerFile = path.join(outsideDir, 'keep.txt');
     fs.writeFileSync(markerFile, 'keep-me', 'utf8');
@@ -723,7 +723,7 @@ describe('MemoryService', () => {
   });
 
   it('rejects readFile when evalArtifactsRoot escapes storageRoot', () => {
-    const outsideDir = fs.mkdtempSync(path.join(os.tmpdir(), 'open-cowork-memory-artifacts-read-'));
+    const outsideDir = fs.mkdtempSync(path.join(os.tmpdir(), 'necter-memory-artifacts-read-'));
     const outsideFile = path.join(outsideDir, 'secret.json');
     fs.writeFileSync(outsideFile, '{"secret":true}', 'utf8');
 
@@ -760,7 +760,7 @@ describe('MemoryService', () => {
   });
 
   it('rejects readFile when evalArtifactsRoot is a filesystem root', () => {
-    const outsideDir = fs.mkdtempSync(path.join(os.tmpdir(), 'open-cowork-memory-artifacts-root-'));
+    const outsideDir = fs.mkdtempSync(path.join(os.tmpdir(), 'necter-memory-artifacts-root-'));
     const outsideFile = path.join(outsideDir, 'secret.json');
     fs.writeFileSync(outsideFile, '{"secret":true}', 'utf8');
 
@@ -798,7 +798,7 @@ describe('MemoryService', () => {
 
   it('rejects readFile when evalArtifactsRoot is a symlink escaping storageRoot', () => {
     const outsideDir = fs.mkdtempSync(
-      path.join(os.tmpdir(), 'open-cowork-memory-artifacts-link-target-')
+      path.join(os.tmpdir(), 'necter-memory-artifacts-link-target-')
     );
     const outsideFile = path.join(outsideDir, 'secret.json');
     fs.writeFileSync(outsideFile, '{"secret":true}', 'utf8');
@@ -842,7 +842,7 @@ describe('MemoryService', () => {
 
   it('rejects non-existent evalArtifactsRoot paths under escaping symlinks before creating directories', () => {
     const outsideDir = fs.mkdtempSync(
-      path.join(os.tmpdir(), 'open-cowork-memory-artifacts-link-parent-')
+      path.join(os.tmpdir(), 'necter-memory-artifacts-link-parent-')
     );
     const outsideArtifactsDir = path.join(outsideDir, 'new-artifacts');
 

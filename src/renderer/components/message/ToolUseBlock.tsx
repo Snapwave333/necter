@@ -118,18 +118,18 @@ export const ToolUseBlock = memo(function ToolUseBlock({
 
   return (
     <div
-      className={`rounded-2xl border overflow-hidden transition-colors ${
+      className={`rounded-xl border overflow-hidden transition-colors ${
         isError
           ? 'border-error/25 bg-error/5'
           : isRunning
-            ? 'border-accent/15 bg-accent/5'
-            : 'border-border-subtle bg-background/40'
+            ? 'border-accent/20 bg-accent/[0.06] animate-tool-pulse'
+            : 'border-border-subtle bg-background/30'
       }`}
     >
       {/* Header — always visible */}
       <button
         onClick={() => setExpanded(!expanded)}
-        className="w-full flex items-center gap-2 px-2.5 py-1.5 text-left hover:bg-surface-hover/50 transition-colors"
+        className="w-full flex items-center gap-2 px-2.5 py-1.5 text-left hover:bg-surface-hover/40 transition-colors"
       >
         {/* Status icon */}
         <div

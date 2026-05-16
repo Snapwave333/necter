@@ -118,6 +118,11 @@ interface AppState {
   // System theme (from OS native theme)
   systemDarkMode: boolean;
 
+  // Shared TTS status — written by VoiceButton, read by useOrb so the
+  // orb animates whenever TTS is active, regardless of which component owns the
+  // useEdgeTTS instance.
+  ttsStatus: 'idle' | 'loading' | 'speaking' | 'error';
+
   // Actions
   setSessions: (sessions: Session[]) => void;
   addSession: (session: Session) => void;
@@ -187,6 +192,9 @@ interface AppState {
 
   // System theme actions
   setSystemDarkMode: (dark: boolean) => void;
+
+  // TTS status actions (shared across components for orb reactivity)
+  setTtsStatus: (status: 'idle' | 'loading' | 'speaking' | 'error') => void;
 }
 
 const defaultSettings: Settings = {
@@ -215,6 +223,11 @@ const defaultSettings: Settings = {
   globalSkillsPath: '',
   memoryStrategy: 'auto',
   maxContextTokens: 180000,
+  ttsEngine: 'edge',
+  edgeVoice: 'en-US-AriaNeural',
+  kokoroVoice: 'af_heart',
+  ttsMuted: false,
+  micMuted: false,
 };
 
 export const useAppStore = create<AppState>((set) => ({
@@ -242,6 +255,7 @@ export const useAppStore = create<AppState>((set) => ({
   skillsStorageChangedAt: 0,
   skillsStorageChangeEvent: null,
   systemDarkMode: false,
+  ttsStatus: 'idle',
 
   // Session actions
   setSessions: (sessions) => set({ sessions }),
@@ -594,6 +608,9 @@ export const useAppStore = create<AppState>((set) => ({
 
   // System theme actions
   setSystemDarkMode: (dark) => set({ systemDarkMode: dark }),
+
+  // TTS status — shared so the orb reacts when VoiceButton triggers TTS
+  setTtsStatus: (status) => set({ ttsStatus: status }),
 }));
 
 // Expose helpers for nav-server (CLI-driven UI navigation via executeJavaScript)

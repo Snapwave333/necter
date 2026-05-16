@@ -195,14 +195,29 @@ export function SettingsLogs({ isActive }: { isActive: boolean }) {
         description={t('logs.inventoryDescription')}
       >
         <div className="grid grid-cols-2 gap-3">
-          <div className="p-4 rounded-lg bg-background border border-border-subtle">
-            <div className="text-2xl font-bold text-text-primary">{logFiles.length}</div>
-            <div className="text-sm text-text-muted">{t('logs.logFiles')}</div>
-          </div>
-          <div className="p-4 rounded-lg bg-background border border-border-subtle">
-            <div className="text-2xl font-bold text-text-primary">{formatFileSize(totalSize)}</div>
-            <div className="text-sm text-text-muted">{t('logs.totalSize')}</div>
-          </div>
+          {isLoading ? (
+            <>
+              <div className="p-4 rounded-lg bg-background border border-border-subtle animate-pulse space-y-2">
+                <div className="h-7 w-8 bg-surface-muted rounded" />
+                <div className="h-4 w-16 bg-surface-muted rounded" />
+              </div>
+              <div className="p-4 rounded-lg bg-background border border-border-subtle animate-pulse space-y-2">
+                <div className="h-7 w-12 bg-surface-muted rounded" />
+                <div className="h-4 w-14 bg-surface-muted rounded" />
+              </div>
+            </>
+          ) : (
+            <>
+              <div className="p-4 rounded-lg bg-background border border-border-subtle">
+                <div className="text-2xl font-bold text-text-primary">{logFiles.length}</div>
+                <div className="text-sm text-text-muted">{t('logs.logFiles')}</div>
+              </div>
+              <div className="p-4 rounded-lg bg-background border border-border-subtle">
+                <div className="text-2xl font-bold text-text-primary">{formatFileSize(totalSize)}</div>
+                <div className="text-sm text-text-muted">{t('logs.totalSize')}</div>
+              </div>
+            </>
+          )}
         </div>
       </SettingsContentSection>
 
@@ -214,22 +229,32 @@ export function SettingsLogs({ isActive }: { isActive: boolean }) {
             <p>{t('logs.noLogFiles')}</p>
           </div>
         ) : (
-          <div className="space-y-2 max-h-64 overflow-y-auto">
-            {logFiles.map((file) => (
-              <div
-                key={file.path}
-                className="p-3 rounded-lg bg-background border border-border-subtle"
-              >
-                <div className="flex items-start justify-between">
-                  <div className="flex-1 min-w-0">
-                    <div className="font-mono text-sm text-text-primary truncate">{file.name}</div>
-                    <div className="text-xs text-text-muted mt-1">
-                      {formatFileSize(file.size)} • {formatDate(file.mtime)}
+          <div className="relative">
+            <div className="space-y-2 max-h-64 overflow-y-auto">
+              {logFiles.map((file) => (
+                <div
+                  key={file.path}
+                  className="p-3 rounded-lg bg-background border border-border-subtle"
+                >
+                  <div className="flex items-start justify-between">
+                    <div className="flex-1 min-w-0">
+                      <div className="font-mono text-sm text-text-primary truncate">{file.name}</div>
+                      <div className="text-xs text-text-muted mt-1">
+                        {formatFileSize(file.size)} • {formatDate(file.mtime)}
+                      </div>
                     </div>
                   </div>
                 </div>
-              </div>
-            ))}
+              ))}
+            </div>
+            {/* Bottom scroll fade — uses CSS var so it works in both light and dark themes */}
+            <div
+              aria-hidden="true"
+              className="absolute bottom-0 left-0 right-0 h-8 pointer-events-none rounded-b-lg"
+              style={{
+                background: 'linear-gradient(to top, var(--color-background) 0%, transparent 100%)',
+              }}
+            />
           </div>
         )}
       </SettingsContentSection>

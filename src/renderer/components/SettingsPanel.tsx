@@ -11,6 +11,7 @@ import {
   Globe,
   ChevronRight,
   BrainCircuit,
+  Volume2,
 } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { useWindowSize } from '../hooks/useWindowSize';
@@ -24,6 +25,7 @@ import { SettingsSchedule } from './settings/SettingsSchedule';
 import { SettingsGeneral } from './settings/SettingsGeneral';
 import { SettingsLogs } from './settings/SettingsLogs';
 import { SettingsMemory } from './settings/SettingsMemory';
+import { SettingsVoice } from './settings/SettingsVoice';
 
 interface SettingsPanelProps {
   onClose: () => void;
@@ -36,7 +38,8 @@ interface SettingsPanelProps {
     | 'schedule'
     | 'remote'
     | 'logs'
-    | 'general';
+    | 'general'
+    | 'voice';
 }
 
 type TabId =
@@ -48,7 +51,8 @@ type TabId =
   | 'schedule'
   | 'remote'
   | 'logs'
-  | 'general';
+  | 'general'
+  | 'voice';
 
 const VALID_TABS = new Set<TabId>([
   'api',
@@ -60,6 +64,7 @@ const VALID_TABS = new Set<TabId>([
   'remote',
   'logs',
   'general',
+  'voice',
 ]);
 
 export function SettingsPanel({ onClose, initialTab = 'api' }: SettingsPanelProps) {
@@ -141,15 +146,21 @@ export function SettingsPanel({ onClose, initialTab = 'api' }: SettingsPanelProp
     },
     {
       id: 'remote' as TabId,
-      label: t('settings.remote', '远程控制'),
+      label: t('settings.remote'),
       icon: Wifi,
-      description: t('settings.remoteDesc', '通过飞书等平台远程使用'),
+      description: t('settings.remoteDesc'),
     },
     {
       id: 'logs' as TabId,
       label: t('settings.logs'),
       icon: AlertCircle,
       description: t('settings.logsDesc'),
+    },
+    {
+      id: 'voice' as TabId,
+      label: t('settings.voice'),
+      icon: Volume2,
+      description: t('settings.voiceDesc'),
     },
     {
       id: 'general' as TabId,
@@ -171,8 +182,8 @@ export function SettingsPanel({ onClose, initialTab = 'api' }: SettingsPanelProp
             <p className="text-[11px] uppercase tracking-[0.16em] text-text-muted">
               {t('settings.title')}
             </p>
-            <h2 className="mt-1 text-[1.24rem] font-semibold tracking-[-0.03em] text-text-primary">
-              Open Cowork
+            <h2 className="mt-1 text-[1.24rem] font-semibold tracking-[-0.03em] text-text-primary font-display">
+              Nectar
             </h2>
             <p className="mt-1 text-[11px] leading-4 text-text-muted">{t('settings.panelDesc')}</p>
           </div>
@@ -279,6 +290,9 @@ export function SettingsPanel({ onClose, initialTab = 'api' }: SettingsPanelProp
               </div>
               <div className={activeTab === 'logs' ? '' : 'hidden'}>
                 {viewedTabs.has('logs') && <SettingsLogs isActive={activeTab === 'logs'} />}
+              </div>
+              <div className={activeTab === 'voice' ? '' : 'hidden'}>
+                {viewedTabs.has('voice') && <SettingsVoice />}
               </div>
               <div className={activeTab === 'general' ? '' : 'hidden'}>
                 {viewedTabs.has('general') && <SettingsGeneral />}

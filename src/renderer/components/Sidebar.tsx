@@ -17,7 +17,8 @@ import {
 } from 'lucide-react';
 import type { Session } from '../types';
 
-import sidebarLogoSrc from '../assets/logo.png';
+import nectarIconWhite from '../assets/nectar-icon-white.png';
+import nectarIconBlack from '../assets/nectar-icon-black.png';
 
 type SessionGroup = {
   key: string;
@@ -30,6 +31,8 @@ export function Sidebar() {
   const sessions = useAppStore((s) => s.sessions);
   const activeSessionId = useAppStore((s) => s.activeSessionId);
   const settings = useAppStore((s) => s.settings);
+  const systemDarkMode = useAppStore((s) => s.systemDarkMode);
+  const isLight = settings.theme === 'light' || (settings.theme === 'system' && !systemDarkMode);
   const sessionStates = useAppStore((s) => s.sessionStates);
   const setActiveSession = useAppStore((s) => s.setActiveSession);
   const setMessages = useAppStore((s) => s.setMessages);
@@ -215,6 +218,11 @@ export function Sidebar() {
       <Monitor className="w-4 h-4" />
     );
 
+  const formatSessionTime = useCallback((timestamp: number) => {
+    const date = new Date(timestamp);
+    return date.toLocaleTimeString([], { hour: 'numeric', minute: '2-digit' });
+  }, []);
+
   if (sidebarCollapsed) {
     return (
       <aside className="w-[4.5rem] bg-surface/96 border-r border-border-muted flex flex-col overflow-hidden">
@@ -274,13 +282,14 @@ export function Sidebar() {
         <div className="flex items-start justify-between gap-3">
           <div className="min-w-0 flex items-center gap-3">
             <img
-              src={sidebarLogoSrc}
-              alt={t('common.appLogoAlt')}
-              className="w-10 h-10 rounded-2xl object-cover border border-border-subtle bg-background/60 flex-shrink-0"
+              src={isLight ? nectarIconBlack : nectarIconWhite}
+              alt="Nectar"
+              className="w-8 h-8 object-contain flex-shrink-0"
+              draggable={false}
             />
             <div className="min-w-0">
-              <h1 className="text-[1.34rem] leading-none font-semibold tracking-[-0.035em] text-text-primary">
-                Open Cowork
+              <h1 className="text-[1.28rem] leading-none font-semibold tracking-[-0.04em] text-text-primary font-display">
+                nectar
               </h1>
             </div>
           </div>
@@ -295,10 +304,10 @@ export function Sidebar() {
 
         <button
           onClick={handleNewSession}
-          className="mt-3 w-full flex items-center gap-2 rounded-xl bg-background/60 px-3 py-2 text-left text-text-primary hover:bg-surface-hover transition-colors"
+          className="mt-3 w-full flex items-center gap-2 rounded-xl bg-accent/10 hover:bg-accent/15 border border-accent/20 px-3 py-2 text-left transition-colors group"
         >
-          <Plus className="w-4 h-4 text-text-secondary flex-shrink-0" />
-          <span className="text-[13px] font-medium">{t('sidebar.newTask')}</span>
+          <Plus className="w-3.5 h-3.5 text-accent flex-shrink-0 group-hover:scale-110 transition-transform" />
+          <span className="text-[13px] font-medium text-accent">{t('sidebar.newTask')}</span>
         </button>
 
         {sessions.length > 0 && (
@@ -336,21 +345,51 @@ export function Sidebar() {
 
       <div className="flex-1 overflow-y-auto px-3 py-4">
         {groupedSessions.length === 0 ? (
-          <div className="px-3 py-6">
-            <p className="text-sm text-text-secondary">{t('sidebar.noTasks')}</p>
-            <p className="mt-1 text-xs leading-5 text-text-muted">{t('sidebar.noTasksHint')}</p>
+          <div className="flex flex-col items-center justify-center py-10 px-3 text-center animate-fade-in">
+            <div className="w-10 h-10 rounded-2xl bg-surface-active border border-border-subtle flex items-center justify-center mb-3 mx-auto">
+              <Plus className="w-5 h-5 text-text-muted" />
+            </div>
+            <p className="text-[13px] font-medium text-text-secondary">{t('sidebar.noTasks')}</p>
+            <p className="mt-1 text-[12px] leading-5 text-text-muted">{t('sidebar.noTasksHint')}</p>
           </div>
         ) : (
           <div className="space-y-3">
             {groupedSessions.map((group) => (
               <section key={group.key}>
-                <div className="px-3 pb-2 text-[11px] font-medium tracking-[0.04em] text-text-muted">
+                <div className="px-3 pb-1.5 pt-0.5 text-[10px] font-semibold tracking-[0.06em] uppercase text-text-muted/70">
                   {group.label}
                 </div>
-                <div className="space-y-0.5">
+                <div className="space-y-px">
                   {group.sessions.map((session) => {
                     const isActive = activeSessionId === session.id;
                     const isSelected = selectedIds.has(session.id);
+                    const isRunning = session.status === 'running';
+                    const isErrored = session.status === 'error';
+
+                    // Derive a stable accent color from session ID for visual distinction
+                    const sessionColors = [
+                      { accent: 'rgba(6,182,212,0.7)', glow: 'rgba(6,182,212,0.15)' },   // cyan
+                      { accent: 'rgba(168,132,208,0.7)', glow: 'rgba(168,132,208,0.15)' }, // mcp violet
+                      { accent: 'rgba(34,197,94,0.7)', glow: 'rgba(34,197,94,0.12)' },    // green
+                      { accent: 'rgba(249,115,22,0.7)', glow: 'rgba(249,115,22,0.12)' },  // orange
+                      { accent: 'rgba(139,92,246,0.7)', glow: 'rgba(139,92,246,0.15)' },  // violet
+                    ];
+                    const colorIdx = session.id.charCodeAt(session.id.length - 1) % sessionColors.length;
+                    const { accent, glow } = sessionColors[colorIdx];
+
+                    // Model-based glyph (show first letter of model family)
+                    const modelGlyph = session.model
+                      ? session.model.toLowerCase().includes('claude') ? 'C'
+                        : session.model.toLowerCase().includes('gpt') ? 'G'
+                        : session.model.toLowerCase().includes('gemini') ? 'M'
+                        : session.model.toLowerCase().includes('deepseek') ? 'D'
+                        : session.model.toLowerCase().includes('mistral') ? 'Mi'
+                        : session.model.toLowerCase().includes('llama') ? 'L'
+                        : session.model.toLowerCase().includes('qwen') ? 'Q'
+                        : session.model.toLowerCase().includes('mixtral') ? 'Mx'
+                        : 'AI'
+                      : 'AI';
+
                     return (
                       <div
                         key={session.id}
@@ -363,37 +402,113 @@ export function Sidebar() {
                         }}
                         onMouseEnter={() => setHoveredSession(session.id)}
                         onMouseLeave={() => setHoveredSession(null)}
-                        className={`group relative cursor-pointer rounded-lg px-2.5 py-1.5 transition-colors ${
-                          isSelectMode && isSelected
-                            ? 'bg-accent-muted/20'
+                        className={`
+                          group relative cursor-pointer rounded-xl px-3 py-2.5
+                          transition-all duration-200
+                          ${isSelectMode && isSelected
+                            ? 'bg-accent/10'
                             : isActive && !isSelectMode
-                              ? 'bg-surface-hover/80'
-                              : 'hover:bg-surface-hover/60'
-                        }`}
+                              ? 'bg-[rgba(255,255,255,0.05)]'
+                              : 'hover:bg-[rgba(255,255,255,0.03)]'
+                          }
+                        `}
                       >
-                        <div className={`flex items-center gap-2 ${!isSelectMode ? 'pr-6' : ''}`}>
+                        {/* Left accent strip — visible on active or hovered */}
+                        {(isActive || hoveredSession === session.id) && (
+                          <div
+                            className="absolute left-0 top-3 bottom-3 w-[2px] rounded-full transition-all duration-200"
+                            style={{
+                              background: isActive ? accent : 'rgba(255,255,255,0.2)',
+                              boxShadow: isActive ? `0 0 8px ${accent}` : 'none',
+                            }}
+                          />
+                        )}
+
+                        <div className={`flex items-center gap-2.5 ${!isSelectMode ? 'pr-5' : ''}`}>
                           {isSelectMode && (
                             <div
-                              className={`w-4 h-4 rounded flex items-center justify-center flex-shrink-0 transition-colors ${
+                              className={`w-4 h-4 rounded-md flex items-center justify-center flex-shrink-0 transition-colors ${
                                 isSelected
                                   ? 'bg-accent text-white'
-                                  : 'border border-border-muted bg-background'
+                                  : 'border border-[rgba(255,255,255,0.1)] bg-transparent'
                               }`}
                             >
                               {isSelected && <Check className="w-2.5 h-2.5" />}
                             </div>
                           )}
+
+                          {!isSelectMode && (
+                            <div className="flex-shrink-0 relative">
+                              {/* Model glyph circle */}
+                              <div
+                                className="w-7 h-7 rounded-lg flex items-center justify-center text-[10px] font-bold transition-all duration-200"
+                                style={{
+                                  background: isActive || hoveredSession === session.id
+                                    ? glow
+                                    : 'rgba(255,255,255,0.04)',
+                                  color: isActive || hoveredSession === session.id
+                                    ? accent
+                                    : 'rgba(255,255,255,0.25)',
+                                  border: `1px solid ${isActive || hoveredSession === session.id
+                                    ? accent.replace('0.7', '0.25')
+                                    : 'rgba(255,255,255,0.06)'}`,
+                                  boxShadow: isActive ? `0 0 10px ${glow}` : 'none',
+                                }}
+                              >
+                                {modelGlyph}
+                              </div>
+                              {/* Running pulse overlay */}
+                              {isRunning && (
+                                <span className="absolute -top-0.5 -right-0.5 flex h-2 w-2">
+                                  <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-accent opacity-60" />
+                                  <span className="relative inline-flex rounded-full h-2 w-2 bg-accent" />
+                                </span>
+                              )}
+                            </div>
+                          )}
+
                           <div className="min-w-0 flex-1">
-                            <div className="text-[13px] font-medium leading-5 text-text-primary truncate">
+                            <div
+                              className={`text-[12.5px] font-medium leading-5 truncate transition-colors ${
+                                isActive && !isSelectMode
+                                  ? 'text-text-primary'
+                                  : 'text-text-secondary group-hover:text-text-primary'
+                              }`}
+                            >
                               {session.title}
+                            </div>
+                            <div className="mt-0.5 flex items-center gap-1.5 text-[10.5px] leading-none">
+                              <span className={isActive ? 'text-text-muted' : 'text-text-muted/60'}>
+                                {formatSessionTime(session.updatedAt || session.createdAt)}
+                              </span>
+                              {session.model && (
+                                <>
+                                  <span className="h-0.5 w-0.5 rounded-full bg-text-muted/40" />
+                                  <span
+                                    className="truncate font-mono"
+                                    style={{
+                                      color: isActive ? 'rgba(255,255,255,0.4)' : 'rgba(255,255,255,0.2)',
+                                    }}
+                                  >
+                                    {session.model.split('-').slice(-2).join('-')}
+                                  </span>
+                                </>
+                              )}
+                              {isErrored && (
+                                <>
+                                  <span className="h-0.5 w-0.5 rounded-full bg-text-muted/40" />
+                                  <span className="text-red-400/70">errored</span>
+                                </>
+                              )}
                             </div>
                           </div>
                         </div>
 
+                        {/* Hover actions */}
                         {!isSelectMode && hoveredSession === session.id && (
                           <button
                             onClick={(e) => handleDeleteSession(e, session.id)}
-                            className="absolute right-1.5 top-1/2 -translate-y-1/2 w-6 h-6 rounded-lg flex items-center justify-center text-text-muted hover:text-error hover:bg-surface-active transition-colors"
+                            className="absolute right-1.5 top-1/2 -translate-y-1/2 w-5 h-5 rounded-md flex items-center justify-center text-text-muted hover:text-red-400 hover:bg-red-400/10 transition-colors"
                             title={t('common.delete')}
                           >
                             <Trash2 className="w-3 h-3" />
@@ -475,8 +590,13 @@ export function Sidebar() {
                 <div className="text-[13px] font-medium text-text-primary">
                   {t('sidebar.settings')}
                 </div>
-                <div className="text-[11px] text-text-muted truncate">
-                  {isConfigured ? t('sidebar.apiConfigured') : t('sidebar.apiNotConfigured')}
+                <div className="flex items-center gap-1 min-w-0">
+                  {!isConfigured && (
+                    <span className="w-1.5 h-1.5 rounded-full bg-accent flex-shrink-0 animate-pulse" />
+                  )}
+                  <div className={`text-[11px] truncate ${isConfigured ? 'text-text-muted' : 'text-accent/90'}`}>
+                    {isConfigured ? t('sidebar.apiConfigured') : t('sidebar.apiNotConfigured')}
+                  </div>
                 </div>
               </div>
             </button>

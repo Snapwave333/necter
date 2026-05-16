@@ -1,18 +1,18 @@
 {
   "schemaVersion": "1.0",
-  "name": "Open Cowork",
-  "organization": "OpenCoworkAI",
-  "canonicalUrl": "https://opencoworkai.github.io/open-cowork/",
+  "name": "Necter",
+  "organization": "NecterAI",
+  "canonicalUrl": "https://opencoworkai.github.io/necter/",
   "localizedUrls": {
-    "en": "https://opencoworkai.github.io/open-cowork/",
-    "zh-CN": "https://opencoworkai.github.io/open-cowork/zh/"
+    "en": "https://opencoworkai.github.io/necter/",
+    "zh-CN": "https://opencoworkai.github.io/necter/zh/"
   },
-  "repository": "https://github.com/OpenCoworkAI/open-cowork",
-  "releases": "https://github.com/OpenCoworkAI/open-cowork/releases",
-  "issues": "https://github.com/OpenCoworkAI/open-cowork/issues",
+  "repository": "https://github.com/NecterAI/necter",
+  "releases": "https://github.com/NecterAI/necter/releases",
+  "issues": "https://github.com/NecterAI/necter/issues",
   "license": {
     "name": "MIT",
-    "url": "https://github.com/OpenCoworkAI/open-cowork/blob/main/LICENSE"
+    "url": "https://github.com/NecterAI/necter/blob/main/LICENSE"
   },
   "version": "3.3.0",
   "lastReviewed": "2026-05-01",
@@ -31,12 +31,12 @@
     {
       "platform": "macOS",
       "method": "Homebrew",
-      "commands": ["brew tap OpenCoworkAI/tap", "brew install --cask --no-quarantine open-cowork"]
+      "commands": ["brew tap NecterAI/tap", "brew install --cask --no-quarantine necter"]
     },
     {
       "platform": "Windows and macOS",
       "method": "GitHub Releases",
-      "url": "https://github.com/OpenCoworkAI/open-cowork/releases"
+      "url": "https://github.com/NecterAI/necter/releases"
     }
   ],
   "capabilities": [
@@ -80,21 +80,21 @@
     "localFirst": true,
     "workspaceBoundary": "File operations are restricted to the selected workspace folder.",
     "vmIsolation": ["WSL2 on Windows", "Lima on macOS"],
-    "dataPolicy": "Open Cowork runs locally; the external network path is the AI model API configured by the user. The project website states that Open Cowork does not send data to Open Cowork servers."
+    "dataPolicy": "Necter runs locally; the external network path is the AI model API configured by the user. The project website states that Necter does not send data to Necter servers."
   },
   "machineReadableResources": {
-    "llmsTxt": "https://opencoworkai.github.io/open-cowork/llms.txt",
-    "llmsFullTxt": "https://opencoworkai.github.io/open-cowork/llms-full.txt",
-    "projectJson": "https://opencoworkai.github.io/open-cowork/project.json",
-    "sitemap": "https://opencoworkai.github.io/open-cowork/sitemap.xml",
-    "robots": "https://opencoworkai.github.io/open-cowork/robots.txt"
+    "llmsTxt": "https://opencoworkai.github.io/necter/llms.txt",
+    "llmsFullTxt": "https://opencoworkai.github.io/necter/llms-full.txt",
+    "projectJson": "https://opencoworkai.github.io/necter/project.json",
+    "sitemap": "https://opencoworkai.github.io/necter/sitemap.xml",
+    "robots": "https://opencoworkai.github.io/necter/robots.txt"
   },
   "sourcePages": [
-    "https://github.com/OpenCoworkAI/open-cowork/blob/main/README.md",
-    "https://github.com/OpenCoworkAI/open-cowork/blob/main/README_zh.md",
-    "https://github.com/OpenCoworkAI/open-cowork/blob/main/CHANGELOG.md",
-    "https://github.com/OpenCoworkAI/open-cowork/blob/main/ROADMAP.md",
-    "https://github.com/OpenCoworkAI/open-cowork/blob/main/SECURITY.md",
-    "https://github.com/OpenCoworkAI/open-cowork/blob/main/CONTRIBUTING.md"
+    "https://github.com/NecterAI/necter/blob/main/README.md",
+    "https://github.com/NecterAI/necter/blob/main/README_zh.md",
+    "https://github.com/NecterAI/necter/blob/main/CHANGELOG.md",
+    "https://github.com/NecterAI/necter/blob/main/ROADMAP.md",
+    "https://github.com/NecterAI/necter/blob/main/SECURITY.md",
+    "https://github.com/NecterAI/necter/blob/main/CONTRIBUTING.md"
   ]
 }

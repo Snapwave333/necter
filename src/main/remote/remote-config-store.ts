@@ -32,19 +32,19 @@ class RemoteConfigStore {
         unknown
       >;
     this.store = createEncryptedStoreWithKeyRotation<RemoteConfigRecord>({
-      stableKey: 'open-cowork-remote-stable-v1',
+      stableKey: 'necter-remote-stable-v1',
       legacyKeys: [
-        'open-cowork-remote-v1',
+        'necter-remote-v1',
         ...getLegacyDerivedKeyHexes({
           moduleDirname: __dirname,
-          stableSeed: 'open-cowork-remote-stable-v1',
-          legacySeed: 'open-cowork-remote-v1',
-          salt: 'open-cowork-remote-salt',
+          stableSeed: 'necter-remote-stable-v1',
+          legacySeed: 'necter-remote-v1',
+          salt: 'necter-remote-salt',
         }),
       ],
       storeOptions: {
         name: 'remote-config',
-        projectName: 'open-cowork',
+        projectName: 'necter',
         defaults: {
           ...DEFAULT_REMOTE_CONFIG,
           pairedUsers: [],

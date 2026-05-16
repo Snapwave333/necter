@@ -3,34 +3,34 @@ layout: home
 head:
   - - link
     - rel: canonical
-      href: https://opencoworkai.github.io/open-cowork/
+      href: https://opencoworkai.github.io/necter/
   - - link
     - rel: alternate
       hreflang: en
-      href: https://opencoworkai.github.io/open-cowork/
+      href: https://opencoworkai.github.io/necter/
   - - link
     - rel: alternate
       hreflang: zh-CN
-      href: https://opencoworkai.github.io/open-cowork/zh/
+      href: https://opencoworkai.github.io/necter/zh/
   - - link
     - rel: alternate
       hreflang: x-default
-      href: https://opencoworkai.github.io/open-cowork/
+      href: https://opencoworkai.github.io/necter/
 
 hero:
-  name: Open Cowork
+  name: Necter
   text: Open-Source AI Agent Desktop App
   tagline: One-click install for Windows & macOS. Multi-model support, VM sandbox isolation, built-in Skills, and MCP integration — no coding required.
   image:
     src: /logo.png
-    alt: Open Cowork Logo
+    alt: Necter Logo
   actions:
     - theme: brand
       text: Download
-      link: https://github.com/OpenCoworkAI/open-cowork/releases
+      link: https://github.com/NecterAI/necter/releases
     - theme: alt
       text: View on GitHub
-      link: https://github.com/OpenCoworkAI/open-cowork
+      link: https://github.com/NecterAI/necter
 
 features:
   - icon: 🚀
@@ -44,7 +44,10 @@ features:
     details: WSL2 (Windows) and Lima (macOS) powered VM isolation. All commands execute in a secure Linux environment, protecting your host system.
   - icon: 🧰
     title: Built-in Skills
-    details: Generate PPTX, DOCX, XLSX, and PDF documents with built-in workflows. Create custom skills with the skill-creator toolkit.
+    details: Generate PPTX, DOCX, XLSX, PDF, and Open Design prototypes with built-in workflows. Create custom skills with the skill-creator toolkit.
+  - icon: 🎨
+    title: Open Design Integration
+    details: Bundles nexu-io/open-design as a local skill with design-system references for polished prototypes, dashboards, landing pages, and DESIGN.md authoring.
   - icon: 🔌
     title: MCP Tool Integration
     details: Connect to browsers, Notion, and desktop apps via Model Context Protocol. Extend AI capabilities beyond file management.
@@ -56,7 +59,7 @@ features:
     details: Send commands and receive results via Feishu (Lark) and Slack integration. Automate workflows across collaboration platforms.
   - icon: 🛡️
     title: Free & Open Source
-    details: MIT licensed. Fully transparent codebase. Your data stays local — no telemetry, no data sent to Open Cowork servers.
+    details: MIT licensed. Fully transparent codebase. Your data stays local — no telemetry, no data sent to Necter servers.
 ---
 
 <style>
@@ -124,7 +127,7 @@ features:
 |                 | MCP & Skills | Remote Control | GUI Automation |
 | --------------- | :----------: | :------------: | :------------: |
 | Claude Cowork   |      ✓       |       ✗        |       ✗        |
-| **Open Cowork** |    **✓**     |     **✓**      |     **✓**      |
+| **Necter** |    **✓**     |     **✓**      |     **✓**      |
 
 </div>
 
@@ -135,11 +138,11 @@ features:
 **macOS (Homebrew)**
 
 ```bash
-brew tap OpenCoworkAI/tap
-brew install --cask --no-quarantine open-cowork
+brew tap NecterAI/tap
+brew install --cask --no-quarantine necter
 ```
 
-**Windows / macOS** — [Download from Releases →](https://github.com/OpenCoworkAI/open-cowork/releases)
+**Windows / macOS** — [Download from Releases →](https://github.com/NecterAI/necter/releases)
 
 </div>
 
@@ -149,9 +152,9 @@ brew install --cask --no-quarantine open-cowork
 
 <div class="faq-item">
 
-### What is Open Cowork?
+### What is Necter?
 
-Open Cowork is a free, open-source AI agent desktop application for Windows and macOS. It wraps AI models (Claude, GPT, Gemini, DeepSeek, etc.) into a user-friendly GUI with one-click installation — no terminal or coding knowledge required.
+Necter is a free, open-source AI agent desktop application for Windows and macOS. It wraps AI models (Claude, GPT, Gemini, DeepSeek, etc.) into a user-friendly GUI with one-click installation — no terminal or coding knowledge required.
 
 </div>
 
@@ -167,7 +170,7 @@ Claude (via Anthropic or OpenRouter), OpenAI-compatible APIs, and Chinese models
 
 ### Is it free?
 
-Yes. Open Cowork is completely free and open-source under the MIT license. You only pay for AI model API usage from your chosen provider.
+Yes. Necter is completely free and open-source under the MIT license. You only pay for AI model API usage from your chosen provider.
 
 </div>
 
@@ -175,7 +178,7 @@ Yes. Open Cowork is completely free and open-source under the MIT license. You o
 
 ### How does sandbox isolation work?
 
-Open Cowork uses WSL2 (Windows) or Lima (macOS) to run all AI-executed commands inside an isolated Linux VM. Even if the AI makes a mistake, your host system files remain protected.
+Necter uses WSL2 (Windows) or Lima (macOS) to run all AI-executed commands inside an isolated Linux VM. Even if the AI makes a mistake, your host system files remain protected.
 
 </div>
 
@@ -183,7 +186,7 @@ Open Cowork uses WSL2 (Windows) or Lima (macOS) to run all AI-executed commands 
 
 ### Is my data safe?
 
-Open Cowork runs entirely on your local machine. The only external communication is with the AI model API you configure. No data is sent to Open Cowork servers.
+Necter runs entirely on your local machine. The only external communication is with the AI model API you configure. No data is sent to Necter servers.
 
 </div>
 
@@ -191,7 +194,7 @@ Open Cowork runs entirely on your local machine. The only external communication
 
 ### Does it work on Linux?
 
-Pre-built installers are available for Windows and macOS. Linux users can build from source — see the [GitHub repository](https://github.com/OpenCoworkAI/open-cowork) for instructions.
+Pre-built installers are available for Windows and macOS. Linux users can build from source — see the [GitHub repository](https://github.com/NecterAI/necter) for instructions.
 
 </div>
 

@@ -537,6 +537,12 @@ export interface Settings {
   globalSkillsPath: string;
   memoryStrategy: 'auto' | 'manual' | 'rolling';
   maxContextTokens: number;
+  // Voice / TTS
+  ttsEngine: 'edge' | 'kokoro';
+  edgeVoice: string;
+  kokoroVoice: string;
+  ttsMuted: boolean;
+  micMuted: boolean;
 }
 
 // Tool types

@@ -1,0 +1,61 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128" width="128" height="128">
+  <defs>
+    <linearGradient id="bg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#1a1a2e"/>
+      <stop offset="100%" style="stop-color:#16213e"/>
+    </linearGradient>
+    <linearGradient id="leftArm" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" style="stop-color:#6ee7f7"/>
+      <stop offset="100%" style="stop-color:#38bdf8"/>
+    </linearGradient>
+    <linearGradient id="rightArm" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" style="stop-color:#a78bfa"/>
+      <stop offset="100%" style="stop-color:#7c3aed"/>
+    </linearGradient>
+    <filter id="glow">
+      <feGaussianBlur stdDeviation="2.5" result="blur"/>
+      <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
+    </filter>
+  </defs>
+
+  <!-- Background -->
+  <rect width="128" height="128" rx="28" fill="url(#bg)"/>
+
+  <!-- Subtle dot grid -->
+  <pattern id="dots" x="0" y="0" width="12" height="12" patternUnits="userSpaceOnUse">
+    <circle cx="1" cy="1" r="0.8" fill="white" opacity="0.06"/>
+  </pattern>
+  <rect width="128" height="128" rx="28" fill="url(#dots)"/>
+
+  <!-- Left arm + hand (cyan) -->
+  <g filter="url(#glow)">
+    <path d="M 6 72 C 10 68 18 64 28 64 L 54 64 C 58 64 62 60 62 56 C 62 52 58 48 54 48 L 36 48 C 32 48 28 44 28 40"
+          fill="none" stroke="url(#leftArm)" stroke-width="7" stroke-linecap="round" stroke-linejoin="round"/>
+    <!-- fingers left -->
+    <path d="M 54 64 L 58 72 M 46 64 L 48 73 M 38 64 L 38 73"
+          fill="none" stroke="url(#leftArm)" stroke-width="5" stroke-linecap="round"/>
+  </g>
+
+  <!-- Right arm + hand (purple) -->
+  <g filter="url(#glow)">
+    <path d="M 122 72 C 118 68 110 64 100 64 L 74 64 C 70 64 66 60 66 56 C 66 52 70 48 74 48 L 92 48 C 96 48 100 44 100 40"
+          fill="none" stroke="url(#rightArm)" stroke-width="7" stroke-linecap="round" stroke-linejoin="round"/>
+    <!-- fingers right -->
+    <path d="M 74 64 L 70 72 M 82 64 L 80 73 M 90 64 L 90 73"
+          fill="none" stroke="url(#rightArm)" stroke-width="5" stroke-linecap="round"/>
+  </g>
+
+  <!-- Nectered center glow -->
+  <circle cx="64" cy="60" r="10" fill="none" stroke="white" stroke-width="1.5" opacity="0.15"/>
+  <circle cx="64" cy="60" r="5" fill="white" opacity="0.9" filter="url(#glow)"/>
+
+  <!-- Spark lines -->
+  <g stroke="white" stroke-linecap="round" opacity="0.55">
+    <line x1="64" y1="45" x2="64" y2="38" stroke-width="2"/>
+    <line x1="64" y1="75" x2="64" y2="82" stroke-width="2"/>
+    <line x1="49" y1="54" x2="43" y2="50" stroke-width="1.5"/>
+    <line x1="79" y1="54" x2="85" y2="50" stroke-width="1.5"/>
+    <line x1="49" y1="66" x2="43" y2="70" stroke-width="1.5"/>
+    <line x1="79" y1="66" x2="85" y2="70" stroke-width="1.5"/>
+  </g>
+</svg>

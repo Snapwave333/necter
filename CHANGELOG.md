@@ -1,11 +1,43 @@
 # Changelog
 
-All notable changes to the Open Cowork AI agent desktop app will be documented in this file.
+All notable changes to the Necter AI agent desktop app will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
+
+### Changed
+
+- **Brand rename**: All references to "Open Cowork" / "OpenCowork" / "open-cowork" replaced with "Necter" across all source files, documentation, website, and build scripts — 54 files updated.
+- **Orb cross-instance reactivity fixed**: Shared `ttsStatus` via Zustand store unifies TTS state between VoiceButton and ChatView orb rendering.
+
+## [3.3.1] - 2026-05-16
+
+Premium UX overhaul pass — cinematic AI workstation aesthetic, voice + orb TTS pipeline completed.
+
+### Added
+
+- Bundled Open Design as a built-in skill with its local design-system library,
+  Apache-2.0 license attribution, welcome-screen quick action, and integration
+  documentation diagrams.
+- **Voice + GLSL Orb Pipeline**: Full TTS subsystem wired — edge-tts CLI (no API key), `useEdgeTTS` React hook, WebGL orb status indicator with 8-state color map, per-instance mute controls (mic + TTS), push-to-talk VoiceButton with auto-speak on LLM response complete, `OrbCanvas` driven by `useOrb` state machine subscribed to trace events.
+- `voice.speak` IPC handler in main process (`edge-tts` subprocess → temp MP3 → renderer plays).
+- Kokoro TTS scaffolding in SettingsVoice UI (voice selection, model picker) — IPC path wired but not yet end-to-end functional.
+
+### Changed
+
+- **UI/UX overhaul** across 7 components (globals.css, tailwind.config.js, ContextPanel, Sidebar, ThinkingBlock, MessageCard, ChatView):
+  - Depth hierarchy: 4-level `--depth-*` scale, `--glow-*` presets, `--edge-*` chromatic lighting, `--atmosphere-*` background gradients.
+  - ContextPanel: glass cockpit redesign with animated SVG radial gauge, model status card with thinking/streaming/idle indicators, chromatic edge lighting, artifact cards with glass hover.
+  - Sidebar: per-session accent colors (5 rotating), model glyph circles, glowing accent strips, rounded-xl items with glass hover.
+  - ThinkingBlock: temporal cycling label (8 phrases at 3s interval), animated cognition-bar progress gradient, streaming 3-dot indicator, depth-matched color theming.
+  - MessageCard: copy button glass style (no hard border), inner highlight on bubbles.
+  - ChatView: sacred input bar — transparent dark glass with backdrop-blur, cyan border glow on content, dynamic shadow depth shift, breathing idle animation.
+  - 9 new CSS keyframe animations, 3 new Tailwind animations.
+- **Message bubble elevation**: user bubbles deeper cyan with inner highlight; assistant bubbles warmer glass with softer shadow.
+- **Design language shift**: borders nearly eliminated — depth through blur, glow, shadow, transparency; Apple/Linear/Vercel aesthetic baseline.
+- Build output: `Necter-3.3.0-win-x64.exe` (installer) and `win-unpacked/Necter.exe` (portable), both passing exit 0.
 
 ## [3.3.0] - 2026-04-18
 
@@ -79,7 +111,7 @@ First stable release of the 3.3.x series. Graduated from 9 beta releases with 30
 
 ### Changed
 
-- Updated Open Cowork app icons for Windows and macOS packaging (branding refresh)
+- Updated Necter app icons for Windows and macOS packaging (branding refresh)
 - Widened chat content area layout for better readability
 
 ### Fixed
@@ -122,12 +154,12 @@ First stable release of the 3.3.x series. Graduated from 9 beta releases with 30
 
 ### Added
 
-- Initial release of Open Cowork — open-source AI agent desktop app with one-click install for Windows and macOS
+- Initial release of Necter — open-source AI agent desktop app with one-click install for Windows and macOS
 
-[Unreleased]: https://github.com/OpenCoworkAI/open-cowork/compare/v3.3.0-beta.8...HEAD
-[3.3.0-beta.8]: https://github.com/OpenCoworkAI/open-cowork/compare/v3.2.0...v3.3.0-beta.8
-[3.2.0]: https://github.com/OpenCoworkAI/open-cowork/compare/v3.1.0...v3.2.0
-[3.1.0]: https://github.com/OpenCoworkAI/open-cowork/compare/v3.0.0...v3.1.0
-[3.0.0]: https://github.com/OpenCoworkAI/open-cowork/compare/v2.0.0...v3.0.0
-[2.0.0]: https://github.com/OpenCoworkAI/open-cowork/compare/v1.0...v2.0.0
-[1.0.0]: https://github.com/OpenCoworkAI/open-cowork/releases/tag/v1.0
+[Unreleased]: https://github.com/NecterAI/necter/compare/v3.3.0-beta.8...HEAD
+[3.3.0-beta.8]: https://github.com/NecterAI/necter/compare/v3.2.0...v3.3.0-beta.8
+[3.2.0]: https://github.com/NecterAI/necter/compare/v3.1.0...v3.2.0
+[3.1.0]: https://github.com/NecterAI/necter/compare/v3.0.0...v3.1.0
+[3.0.0]: https://github.com/NecterAI/necter/compare/v2.0.0...v3.0.0
+[2.0.0]: https://github.com/NecterAI/necter/compare/v1.0...v2.0.0
+[1.0.0]: https://github.com/NecterAI/necter/releases/tag/v1.0
