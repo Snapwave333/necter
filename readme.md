@@ -14,7 +14,25 @@
 </p>
 
 <p align="center">
-  <strong>Necter</strong> is a fork of <a href="https://github.com/pynjtai/OpenCowork">Open Cowork</a> — a free, open-source AI agent desktop app for Windows and macOS.
+  <strong>Necter</strong> is a fork of <a href="https://github.com/OpenCoworkAI/open-cowork"><strong>Open Cowork</strong></a> — a free, open-source AI agent desktop app for Windows and macOS.
+</p>
+
+---
+
+## 🙏 Thanks & Acknowledgements
+
+Necter is based on **[Open Cowork](https://github.com/OpenCoworkAI/open-cowork)** by the OpenCowork team. We're grateful for their foundational work building an open-source AI agent framework that powers desktop productivity.
+
+If you find Necter useful, please also star ⭐ **[the original repo](https://github.com/OpenCoworkAI/open-cowork)**!
+
+---
+
+## 🔗 Links
+
+<p align="center">
+  <a href="https://github.com/Snapwave333/necter/stargazers"><img src="https://img.shields.io/github/stars/Snapwave333/necter?style=for-the-badge&color=ffcb2f" alt="Stars" /></a>
+  <a href="https://github.com/Snapwave333/necter/network/members"><img src="https://img.shields.io/github/forks/Snapwave333/necter?style=for-the-badge&color=2d2d2d" alt="Forks" /></a>
+  <a href="https://github.com/OpenCoworkAI/open-cowork"><img src="https://img.shields.io/badge/Original-Open%20Cowork-7C1600?style=for-the-badge" alt="Open Cowork" /></a>
 </p>
 
 ---
