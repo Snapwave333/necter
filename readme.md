@@ -1,5 +1,9 @@
 # Necter
 
+<p align="center">
+  <img src="resources/logo.png" alt="Necter" width="480" />
+</p>
+
 **Necter** is a fork of [Open Cowork](https://github.com/pynjtai/OpenCowork) — a free, open-source AI agent desktop app for Windows and macOS. It wraps Claude Code, OpenAI, Gemini, DeepSeek, and other AI models into a GUI with one-click installation.
 
 This fork adds: real-time Voice UI with a WebGL status orb, a built-in Skills system for generating PPTX/DOCX/PDF/XLSX files, GUI automation via computer use, multi-model support beyond just Claude, and VM-level sandbox isolation (WSL2 on Windows, Lima on macOS).
