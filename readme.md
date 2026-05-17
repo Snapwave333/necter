@@ -1,7 +1,7 @@
 # Necter
 
 <p align="center">
-  <img src="resources/logo.png" alt="Necter" width="480" />
+  <img src="https://github.com/Snapwave333/necter/raw/main/resources/logo.png" alt="Necter" width="480" />
 </p>
 
 **Necter** is a fork of [Open Cowork](https://github.com/pynjtai/OpenCowork) — a free, open-source AI agent desktop app for Windows and macOS. It wraps Claude Code, OpenAI, Gemini, DeepSeek, and other AI models into a GUI with one-click installation.
