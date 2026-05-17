@@ -22,6 +22,21 @@
 
 ## 🚧 In Progress
 
+### Phase 1 — LifeOps Adapter Core (v3.4.0)
+**Gmail + Calendar + Tasks (read-only) + Obsidian (append-only) + Permission Gate + Audit Log**
+
+- `LifeOpsAdapter` base interface
+- `GmailAdapter` — Gmail REST API (read-only, gmail.readonly scope)
+- `CalendarAdapter` — Google Calendar REST API (read-only)
+- `TasksAdapter` — Google Tasks REST API (read-only)
+- `ObsidianAdapter` — direct vault file access (append-only)
+- `LifeOpsPermissionGate` — Level 0/1/2/3/4 enforcement
+- `AuditLog` — every action recorded with timestamp + user + tool + result
+- IPC handlers for all lifeops channels
+- Gmail/Tasks/Calendar/Obsidian settings panel (connect + disconnect)
+- Morning briefing agent prompt template
+- [Details](docs/superpowers/plans/2026-05-16-lifeops-phase-1.md)
+
 ### Phase 1 — Finance Adapter Core (v3.4.0)
 **Finance Adapter Interface + Actual Budget + Permission Gate**
 
@@ -39,7 +54,28 @@
 
 ## 📋 Planned
 
-### Phase 2 — Smart Spend Engine (v3.5.0)
+### Phase 2 — LifeOps Drafts + Approval Queue (v3.5.0)
+**Email Drafts + Task Drafts + Event Drafts + Approval UI**
+
+- Gmail draft creation + send-with-approval flow
+- Calendar event draft creation + approval
+- Task creation with approval
+- Approval queue UI panel
+- Cross-linking: email → task → calendar → note
+- `gmail.modify` and `gmail.send` scope activation
+- Full Calendar write scope
+- Full Tasks write scope
+
+### Phase 3 — Safe Writes + Autonomous LifeOps (v3.6.0)
+**Level 3 Auto-Writes + Morning Briefing Agent**
+
+- Level 3 autonomous safe writes (append daily note, label, archive)
+- Obsidian Local REST API / MCP integration
+- Morning briefing agent — auto-summarize Gmail + Calendar + Tasks + Obsidian daily note
+- Weekly review automation
+- Recurring routine detection
+
+### Phase 5 — Smart Spend Engine (v3.8.0)
 **Categorization + Anomaly Detection + Ollama**
 
 - Ollama/Qwen categorizer — suggests category for new transactions
@@ -49,7 +85,7 @@
 - Upcoming bills widget
 - Monthly spending summary
 
-### Phase 3 — Write Operations + Firefly III (v3.6.0)
+### Phase 6 — Write Operations + Firefly III (v3.9.0)
 **Draft/Approve Flow + Second Backend**
 
 - Level 2 approved-write flow — AI drafts, user confirms
@@ -59,7 +95,7 @@
 - Adapter selector UI — pick which backend per workspace
 - AGPL compliance notes for Firefly III integration
 
-### Phase 4 — Investment Layer (v3.7.0)
+### Phase 7 — Investment Layer (v3.10.0)
 **OpenBB + Portfolio Intelligence**
 
 - `OpenBBAdapter` — stocks, crypto, ETFs, macro data
@@ -68,7 +104,7 @@
 - Investment Health Score
 - News + sentiment integration
 
-### Phase 5 — Automation + Collaboration (v3.8.0+)
+### Phase 8 — Automation + Collaboration (v3.11.0+)
 **Scheduled Flows + Multi-User**
 
 - Scheduled budgeting automations (cron-based)

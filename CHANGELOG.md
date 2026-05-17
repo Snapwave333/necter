@@ -7,10 +7,17 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+
+- **LifeOps Pipeline** (`docs/superpowers/plans/2026-05-16-lifeops-pipeline.md`): Gmail + Calendar + Tasks + Obsidian behind one agent-safe interface with approval queue — 4-phase roadmap from read-only through autonomous morning briefing.
+- **LifeOps Phase 1 Plan** (`docs/superpowers/plans/2026-05-16-lifeops-phase-1.md`): Full implementation guide — GmailAdapter, CalendarAdapter, TasksAdapter, ObsidianAdapter, LifeOpsPermissionGate, AuditLog, IPC handlers, settings UI.
+- **Finance Phase 1 complete**: `FinanceAdapter` interface, `ActualBudgetAdapter`, `PermissionGate`, `SafeSpendCalculator`, IPC handlers — pushed to `25a7cf3`.
+
 ### Changed
 
 - **Brand rename**: All references to "Open Cowork" / "OpenCowork" / "open-cowork" replaced with "Necter" across all source files, documentation, website, and build scripts — 54 files updated.
 - **Orb cross-instance reactivity fixed**: Shared `ttsStatus` via Zustand store unifies TTS state between VoiceButton and ChatView orb rendering.
+- **Roadmap phases renumbered**: LifeOps added as Phases 1–4; Finance shifted to Phases 5–8 to reflect build order priority.
 
 ## [3.3.1] - 2026-05-16
 
