@@ -22,29 +22,76 @@
 
 ## 🚧 In Progress
 
-- **Kokoro TTS end-to-end**: Main process IPC handler + Kokoro CLI path needs completion (SettingsVoice UI scaffolding already in place, edge-tTS pipeline functional as primary).
-- **OrbCanvas cross-instance reactivity**: FIXED — shared `ttsStatus` via Zustand store; VoiceButton and ChatView both read/write to `useAppStore` so orb reacts to TTS events from either component.
+### Phase 1 — Finance Adapter Core (v3.4.0)
+**Finance Adapter Interface + Actual Budget + Permission Gate**
+
+- `FinanceAdapter` TypeScript interface
+- `ActualBudgetAdapter` — first backend implementation
+- `PermissionGate` — enforces Level 0/1/2/3 AI safety model
+- `SafeSpendCalculator` — safe-to-spend logic
+- Basic Finance UI panel — account list, balance, transaction feed
+- IPC handlers + preload bridge
+- [Details](docs/superpowers/plans/2026-05-16-finance-phase-1.md)
+
+### Also In Progress
+- **Kokoro TTS end-to-end**: Main process IPC handler + Kokoro CLI path needs completion (edge-tTS functional as primary).
+- **OrbCanvas cross-instance reactivity**: FIXED — shared `ttsStatus` via Zustand store.
 
 ## 📋 Planned
 
-### Near-term (v3.4.0)
+### Phase 2 — Smart Spend Engine (v3.5.0)
+**Categorization + Anomaly Detection + Ollama**
 
-- **Sandbox Hardening**: Deep research and improvement of VM sandbox reliability, startup performance, and cross-platform consistency (Lima on macOS, WSL2 on Windows)
-- **App Slimming**: Reduce installer from ~156 MB to ~80 MB — on-demand Python/Node.js download, lazy-load Feishu SDK, strip unused files ([details](docs/SLIM-PLAN.md))
+- Ollama/Qwen categorizer — suggests category for new transactions
+- Bill detection — flags recurring payments
+- Anomaly detection — flags unusual spending patterns
+- Budget progress UI — envelope/budget status per category
+- Upcoming bills widget
+- Monthly spending summary
+
+### Phase 3 — Write Operations + Firefly III (v3.6.0)
+**Draft/Approve Flow + Second Backend**
+
+- Level 2 approved-write flow — AI drafts, user confirms
+- Transaction creation (manual entry with AI assist)
+- Budget reallocation (AI suggests, user approves)
+- `FireflyIIIAdapter` — second backend for power users
+- Adapter selector UI — pick which backend per workspace
+- AGPL compliance notes for Firefly III integration
+
+### Phase 4 — Investment Layer (v3.7.0)
+**OpenBB + Portfolio Intelligence**
+
+- `OpenBBAdapter` — stocks, crypto, ETFs, macro data
+- Portfolio dashboard
+- Market research copilot
+- Investment Health Score
+- News + sentiment integration
+
+### Phase 5 — Automation + Collaboration (v3.8.0+)
+**Scheduled Flows + Multi-User**
+
+- Scheduled budgeting automations (cron-based)
+- CSV + SimpleFIN import pipeline
+- Plaid import (future, if user provides credentials)
+- Multi-workspace finance views
+- Finance skills for Necter agent
+
+### Near-term Infrastructure (all phases)
+
+- **Sandbox Hardening**: VM reliability, startup performance, Lima/WSL2 consistency
+- **App Slimming**: Reduce installer from ~267 MB to ~80 MB — on-demand deps, lazy-load SDKs, strip unused files
 - **Code Cleanup**: Split god files (index.ts 2672 lines, gui-operate-server.ts 6884 lines), lazy imports, dead code removal
-- **Naming Standardization**: Clean up 75+ legacy references (claude-sdk, claude-sandbox, claude-plugin, pi-coding-agent) to consistent Necter naming conventions
-- **Tool Completeness**: Implement native TodoWrite, AskUserQuestion, Glob, Grep, WebFetch, WebSearch tool schemas + handlers for API key users
-- **Memory System Enhancements**: Improve prompt injection controls, cross-session retrieval UX, memory source inspection, and source-aware reranking quality
-- **Scheduled Tasks**: Cron-like task scheduling with UI management and persistent execution
-- **Log Management**: Structured logging with rotation, size limits, and user-accessible log viewer improvements
-- **Installation Experience**: Smoother first-run — auto-detect system dependencies, clearer error messages, one-click setup
+- **Naming Standardization**: Clean up 75+ legacy references to consistent Necter naming conventions
+- **Tool Completeness**: Native TodoWrite, AskUserQuestion, Glob, Grep, WebFetch, WebSearch tool schemas + handlers
+- **Memory System Enhancements**: Prompt injection controls, cross-session retrieval UX
+- **Scheduled Tasks**: Cron-like task scheduling with UI management
+- **Log Management**: Structured logging with rotation + user-accessible viewer
+- **Installation Experience**: Smoother first-run — auto-detect deps, clearer error messages, one-click setup
 - **Linux Support**: First-class Linux builds (currently build-from-source only)
-
-### Mid-term (v3.5.0+)
-
 - **Plugin System**: Extensible architecture for community-built integrations
 - **Multi-Agent**: Orchestrate multiple agents for complex workflows
-- **Workspace Templates**: Pre-configured environments for common use cases (coding, writing, research)
+- **Workspace Templates**: Pre-configured environments for common use cases
 
 ### Long-term
 
