@@ -11,6 +11,7 @@
   <a href="https://github.com/Snapwave333/necter/forks"><img src="https://img.shields.io/github/forks/Snapwave333/necter?style=flat-square&color=2d2d2d" alt="Forks" /></a>
   <img src="https://img.shields.io/badge/Platform-Windows%20%7C%20macOS-blue?style=flat-square" alt="Platform" />
   <img src="https://img.shields.io/badge/Node.js-18+-brightgreen?style=flat-square" alt="Node.js" />
+  <img src="https://img.shields.io/badge/i18n-16%20languages-blue?style=flat-square" alt="Languages" />
 </p>
 
 <p align="center">
@@ -47,7 +48,7 @@ If you find Necter useful, please also star ⭐ **[the original repo](https://gi
 | 🤖 **Multi-Model** | Claude · OpenAI · GLM · MiniMax · Kimi · any OpenAI-compatible API |
 | 🔒 **VM Sandbox** | WSL2 (Windows) / Lima (macOS) — all commands isolated in a Linux VM |
 | 🔌 **MCP Connectors** | Browser · Notion · and custom desktop app integrations |
-| 🌐 **i18n** | English and 中文 (Chinese) |
+| 🌐 **i18n** | 16 languages · auto-detect browser locale |
 
 ---
 
