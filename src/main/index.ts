@@ -56,6 +56,7 @@ import { remoteManager, type AgentExecutor } from './remote/remote-manager';
 import { remoteConfigStore } from './remote/remote-config-store';
 import type { GatewayConfig, FeishuChannelConfig, ChannelType } from './remote/types';
 import { startNavServer, stopNavServer } from './nav-server';
+import { registerFinanceIpc } from './finance/financeIpc';
 import {
   ScheduledTaskManager,
   type ScheduledTaskCreateInput,
@@ -1236,6 +1237,8 @@ app.on('before-quit', async (event) => {
 });
 
 // IPC Handlers
+registerFinanceIpc();
+
 ipcMain.on('client-event', async (_event, data: ClientEvent) => {
   try {
     await handleClientEvent(data);
