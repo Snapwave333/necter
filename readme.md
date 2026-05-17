@@ -1,378 +1,112 @@
-<p align="center">
-  <img src="resources/logo.png" alt="Necter Logo" width="280" />
-</p>
+# Necter
 
-<h1 align="center">🚀 Necter: Your Personal AI Agent Desktop App</h1>
+**Necter** is a fork of [Open Cowork](https://github.com/pynjtai/OpenCowork) — a free, open-source AI agent desktop app for Windows and macOS. It wraps Claude Code, OpenAI, Gemini, DeepSeek, and other AI models into a GUI with one-click installation.
 
-<p align="center">
-  • Open Source Claude Cowork • One-Click Install 
-</p>
-
-<p align="center">
-  <a href="./README_zh.md">中文文档</a> •
-  <a href="#features">Features</a> •
-  <a href="#demo">Demo</a> •
-  <a href="#installation">Downloads</a> •
-  <a href="#quick-start">Quick Start</a> •
-  <a href="#skills">Skills Library</a>
-</p>
-
-<p align="center">
-  <img src="https://img.shields.io/badge/Platform-Windows%20%7C%20macOS-blue" alt="Platform" />
-  <img src="https://img.shields.io/badge/License-MIT-green" alt="License" />
-  <img src="https://img.shields.io/badge/Node.js-18+-brightgreen" alt="Node.js" />
-  <a href="https://discord.gg/pynjtQDf"><img src="https://img.shields.io/discord/1493588403260883078?logo=discord&label=Discord&color=5865F2" alt="Discord" /></a>
-  <a href="#community"><img src="https://img.shields.io/badge/WeChat-微信群-07C160?logo=wechat&logoColor=white" alt="WeChat" /></a>
-</p>
+This fork adds: real-time Voice UI with a WebGL status orb, a built-in Skills system for generating PPTX/DOCX/PDF/XLSX files, GUI automation via computer use, multi-model support beyond just Claude, and VM-level sandbox isolation (WSL2 on Windows, Lima on macOS).
 
 ---
 
-Necter is a free, open-source AI agent desktop application for Windows and macOS. It wraps Claude Code, OpenAI, Gemini, DeepSeek, and other AI models into a user-friendly GUI with one-click installation — no coding required. Key capabilities include VM-level sandbox isolation (WSL2 on Windows, Lima on macOS), a built-in Skills system for generating PPTX, DOCX, XLSX, and PDF documents, MCP (Model Context Protocol) integration for connecting to browsers, Notion, and other desktop apps, GUI automation via computer use, and remote control through Feishu (Lark) and Slack. Necter is the open-source implementation of Claude Cowork, designed to make AI-powered desktop automation accessible to everyone.
+## What's New in This Fork
+
+| Feature | Details |
+|---|---|
+| **Voice UI** | WebGL status orb + push-to-talk + Edge TTS auto-speak |
+| **Skills System** | Built-in workflows for PPTX, DOCX, PDF, XLSX generation |
+| **GUI Automation** | Computer use — control desktop apps directly |
+| **Multi-Model** | Claude, OpenAI, GLM, MiniMax, Kimi, any OpenAI-compatible API |
+| **VM Sandbox** | WSL2 (Win) / Lima (macOS) — all commands isolated in a Linux VM |
+| **MCP Connectors** | Browser, Notion, and custom desktop app integrations |
+| **i18n** | English and Chinese (中文) |
 
 ---
 
-## 📖 Introduction
+## Installation
 
-**Necter** is an open-source implementation of **Claude Cowork**, with one-click installers for **Windows** and **macOS**—no coding required.
-
-It provides a sandboxed workspace where AI can manage files, generate professional outputs (PPTX, DOCX, XLSX, etc.) through our built-in **Skills** system, and **connect to desktop apps via MCP** (browser, Notion, etc.) for better collaboration.
-
-> [!WARNING]
-> **Disclaimer**: Necter is an AI collaboration tool. Please exercise caution with its operations, especially when authorizing file modifications or deletions. We support VM-based sandbox isolation, but some operations may still carry risks.
-
----
-
-<a id="features"></a>
-
-## ✨ Key Features
-
-|               | MCP & Skills | Remote Control | GUI Operation |
-| ------------- | ------------ | -------------- | ------------- |
-| Claude Cowork | ✓            | ✗              | ✗             |
-| OpenClaw      | ✓            | ✓              | ✗             |
-| Necter    | ✓            | ✓              | ✓             |
-
-- **One-Click Install, Ready to Use**: Pre-built installers for Windows and macOS, no environment setup needed—just download and start using.
-- **Real-time Voice Orb**: WebGL status indicator in the header with 8-state color map (idle=cyan, thinking=blue, tool=green, search=yellow, speaking=magenta, error=orange, memory=white, coding=purple) — driven by trace events, with per-instance mic mute and TTS mute controls.
-- **Flexible Model Support**: Supports **Claude**, **OpenAI-compatible APIs**, and Chinese models like **GLM**, **MiniMax**, **Kimi**. Use your OpenRouter, Anthropic, or other API keys with flexible configuration. More models coming soon!
-- **Remote Control**: Connect to collaboration platforms like **Feishu (Lark)** and other remote services to automate workflows and cross-platform operations.
-- **GUI Operation**: Control and interact with various desktop GUI applications on your computer. **Recommended model: Gemini-3-Pro** for optimal GUI understanding and control.
-- **Smart File Management**: Read, write, and organize files within your workspace.
-- **Skills System**: Built-in workflows for PPTX, DOCX, PDF, XLSX generation and processing. **Supports custom skill creation and deletion.**
-- **Open Design Integration**: Bundles the `nexu-io/open-design` workflow as a built-in skill with local design-system references for prototypes, dashboards, landing pages, visual critiques, and `DESIGN.md` authoring.
-- **MCP External Service Support**: Integrate browser, Notion, custom apps and more through **MCP Connectors** to extend AI capabilities.
-- **Multimodal Input**: Drag & drop files and images directly into the chat input for seamless multimodal interaction.
-- **Real-time Trace**: Watch AI reasoning and tool execution in the Trace Panel.
-- **Secure Workspace**: All operations confined to your chosen workspace folder.
-- **VM-Level Isolation**: WSL2 (Windows) and Lima (macOS) VM isolation—all commands execute in an isolated VM to protect your host system.
-- **UI Enhancements**: Beautiful and flexible UI design, system language switching, comprehensive MCP/Skills/Tools call display.
-
-<a id="demo"></a>
-
-## 🎬 Demo
-
-See Necter in action:
-
-### 1. Folder Organization & Cleanup 📂
-
-https://github.com/user-attachments/assets/dbeb0337-2d19-4b5d-a438-5220f2a87ca7
-
-### 2. Generate PPT from Files 📊
-
-https://github.com/user-attachments/assets/30299ded-0260-468f-b11d-d282bb9c97f2
-
-### 3. Generate XLSX Spreadsheets 📉
-
-https://github.com/user-attachments/assets/f57b9106-4b2c-4747-aecd-a07f78af5dfc
-
-### 4. GUI Operation🖥
-
-https://github.com/user-attachments/assets/75542c76-210f-414d-8182-1da988c148f2
-
-### 5. Remote control with Feishu(Lark) 🤖
-
-https://github.com/user-attachments/assets/05a703de-c0f5-407b-9a43-18b6a172fd74
-
----
-
-<a id="installation"></a>
-
-## 📦 Installation
-
-### Option 1: Homebrew (macOS, Recommended)
+### macOS — Homebrew (recommended)
 
 ```bash
-brew tap NecterAI/tap
+brew tap Snapwave333/tap
 brew install --cask --no-quarantine necter
 ```
 
-> The `--no-quarantine` flag bypasses macOS Gatekeeper, so you won't see the "Apple cannot verify this app" warning.
+### Windows — Download
 
-### Option 2: Download Installer
+Get the latest `.exe` installer from [Releases](https://github.com/Snapwave333/necter/releases).
 
-Get the latest version from our [Releases Page](https://github.com/NecterAI/necter/releases).
-
-| Platform                  | File Type |
-| ------------------------- | --------- |
-| **Windows**               | `.exe`    |
-| **macOS** (Apple Silicon) | `.dmg`    |
-
-### Option 3: Build from Source
-
-For developers who want to contribute or modify the codebase:
+### Build from Source
 
 ```bash
-git clone https://github.com/NecterAI/necter.git
+git clone https://github.com/Snapwave333/necter.git
 cd necter
 npm install
-npm run rebuild
 npm run dev
 ```
 
-To build the installer locally: `npm run build`
+---
 
-### Open Design Skill Flow
+## Quick Start
 
-Necter includes a local Open Design integration for artifact-first design
-work. The built-in `open-design` skill is packaged with Open Design's design
-system library, copied into WSL2/Lima sandboxes with the rest of the built-in
-skills, and exposed from the welcome screen as **Open Design prototype**.
-
-```mermaid
-flowchart LR
-  Brief["Design brief"] --> Skill["open-design skill"]
-  Skill --> Systems["Bundled DESIGN.md library"]
-  Systems --> Agent["Agent implementation"]
-  Agent --> Output["Prototype, GUI polish, or DESIGN.md"]
-```
-
-See [`docs/open-design-integration.md`](docs/open-design-integration.md) for the
-full runtime and packaging diagrams.
-
-### Security Configuration: 🔒 Sandbox Support
-
-Necter provides **multi-level sandbox protection** to keep your system safe:
-
-| Level        | Platform | Technology | Description                                    |
-| ------------ | -------- | ---------- | ---------------------------------------------- |
-| **Basic**    | All      | Path Guard | File operations restricted to workspace folder |
-| **Enhanced** | Windows  | WSL2       | Commands execute in isolated Linux VM          |
-| **Enhanced** | macOS    | Lima       | Commands execute in isolated Linux VM          |
-
-- **Windows (WSL2)**: When WSL2 is detected, all Bash commands are automatically routed to a Linux VM. The workspace is synced bidirectionally.
-- **macOS (Lima)**: When [Lima](https://lima-vm.io/) is installed (`brew install lima`), commands run in an Ubuntu VM with `/Users` mounted.
-- **Fallback**: If no VM is available, commands run natively with path-based restrictions.
-
-**Setup (Optional, Recommended)**
-
-- **Windows**: WSL2 is auto-detected if installed. [Install WSL2](https://docs.microsoft.com/en-us/windows/wsl/install)
-
-- **macOS**:
-  Lima is auto-detected if installed. Install command:
-
-```bash
-brew install lima
-# Necter will automatically create and manage a 'claude-sandbox' VM
-```
+1. Open the app
+2. Go to **Settings** → paste your API key → set the Base URL and model
+3. Pick a workspace folder
+4. Start chatting
 
 ---
 
-<a id="quick-start"></a>
+## Voice UI
 
-## 🚀 Quick Start Guide
+Necter has a real-time WebGL orb in the header that reflects what the AI is doing:
 
-### 1. Get an API Key
+| State | Color | Meaning |
+|---|---|---|
+| Idle | Cyan | Waiting |
+| Thinking | Blue | Reasoning |
+| Tool | Green | Running a tool |
+| Searching | Yellow | Web search |
+| Speaking | Magenta | TTS playing |
+| Error | Orange | Something failed |
+| Memory | White | Accessing memory |
+| Coding | Purple | Writing code |
 
-You need an API key to power the agent. We support **OpenRouter**, **Anthropic**, and various cost-effective **Chinese Models**.
-
-| Provider           | Get Key / Coding Plan                                                      | Base URL (Required)                      | Recommended Model    |
-| ------------------ | -------------------------------------------------------------------------- | ---------------------------------------- | -------------------- |
-| **OpenRouter**     | [OpenRouter](https://openrouter.ai/)                                       | `https://openrouter.ai/api`              | `claude-4-5-sonnet`  |
-| **Anthropic**      | [Anthropic Console](https://console.anthropic.com/)                        | (Default)                                | `claude-4-5-sonnet`  |
-| **Zhipu AI (GLM)** | [GLM Coding Plan](https://bigmodel.cn/glm-coding) (⚡️Chinese Deal)         | `https://open.bigmodel.cn/api/anthropic` | `glm-4.7`, `glm-4.6` |
-| **MiniMax**        | [MiniMax Coding Plan](https://platform.minimaxi.com/subscribe/coding-plan) | `https://api.minimaxi.com/anthropic`     | `minimax-m2`         |
-| **Kimi**           | [Kimi Coding Plan](https://www.kimi.com/membership/pricing)                | `https://api.kimi.com/coding/`           | `kimi-k2`            |
-
-### 2. Configure
-
-1. Open the app and click the ⚙️ **Settings** icon in the bottom left.
-2. Paste your **API Key**.
-3. **Crucial**: Set the **Base URL** according to the table above (especially for Zhipu/MiniMax, etc.).
-4. Enter the **Model** name you want to use.
-
-### 3. Start Coworking
-
-1. **Select a Workspace**: Choose a folder where Claude is allowed to work.
-2. **Enter a Prompt**:
-   > "Read the financial_report.csv in this folder and create a PowerPoint summary with 5 slides."
-
-### 📝 Important Notes
-
-1.  **macOS Installation**: If you downloaded the DMG directly (not via Homebrew) and see a security warning, go to **System Settings > Privacy & Security** and click **Open Anyway**. Or install via Homebrew to avoid this entirely:
-    ```bash
-    brew tap NecterAI/tap && brew install --cask --no-quarantine necter
-    ```
-2.  **Network Access**: For tools like `WebSearch`, you may need to enable "Virtual Network Interface" (TUN Mode) in your proxy settings to ensure connectivity.
-3.  **Notion Connector**: Besides setting the integration token, you also need to add connections in a root page. See https://www.notion.com/help/add-and-manage-connections-with-the-api for more details.
+Push-to-talk (hold mic button), TTS auto-speak on responses, and independent mute controls are in the header.
 
 ---
 
-<a id="skills"></a>
+## Skills
 
-## 🧰 Skills Library
+Built-in skills ready to use out of the box:
 
-Necter ships with built-in skills under `.claude/skills/`, and supports user-added or custom skills, including:
-
-- `pptx` for PowerPoint generation
-- `docx` for Word document processing
-- `pdf` for PDF handling and forms
-- `xlsx` for Excel spreadsheet support
-- `skill-creator` for creating custom skills
+- **pptx** — Generate PowerPoint presentations
+- **docx** — Create or edit Word documents
+- **pdf** — Handle PDFs and fill forms
+- **xlsx** — Build Excel spreadsheets
+- **skill-creator** — Create your own skills
 
 ---
 
-## 🏗️ Architecture
+## Sandbox Security
 
-```
-necter/
-├── src/
-│   ├── main/                    # Electron Main Process (Node.js)
-│   │   ├── index.ts             # Main entry point + IPC handlers
-│   │   ├── whisper-worker.py    # faster-whisper STT worker (persistent)
-│   │   ├── claude/              # Agent SDK & Runner
-│   │   │   └── agent-runner.ts  # AI agent execution logic
-│   │   ├── config/              # Configuration management
-│   │   │   └── config-store.ts  # Persistent settings storage
-│   │   ├── db/                  # Database layer
-│   │   │   └── database.ts      # SQLite/data persistence
-│   │   ├── ipc/                 # IPC handlers
-│   │   ├── memory/              # Memory management
-│   │   │   └── memory-manager.ts
-│   │   ├── sandbox/             # Security & Path Resolution
-│   │   │   └── path-resolver.ts # Sandboxed file access
-│   │   ├── session/             # Session management
-│   │   │   └── session-manager.ts
-│   │   ├── skills/              # Skill Loader & Manager
-│   │   │   └── skills-manager.ts
-│   │   └── tools/               # Tool execution
-│   │       └── tool-executor.ts # Tool call handling
-│   ├── preload/                 # Electron preload scripts
-│   │   └── index.ts             # Context bridge (voice.speak, voice.transcribe)
-│   └── renderer/                # Frontend UI (React + Tailwind)
-│       ├── App.tsx              # Root component
-│       ├── main.tsx             # React entry point
-│       ├── components/          # UI Components
-│       │   ├── ChatView.tsx     # Main chat interface
-│       │   ├── ConfigModal.tsx  # Settings dialog
-│       │   ├── ContextPanel.tsx # AI cockpit — context, MCP, artifacts
-│       │   ├── MessageCard.tsx  # Chat message component
-│       │   ├── OrbCanvas.tsx    # WebGL status orb (8-state color map)
-│       │   ├── MuteControls.tsx # Mic + TTS mute buttons
-│       │   ├── PermissionDialog.tsx
-│       │   ├── Sidebar.tsx      # Navigation sidebar + session list
-│       │   ├── Titlebar.tsx     # Custom window titlebar
-│       │   ├── TracePanel.tsx   # AI reasoning trace
-│       │   ├── VoiceButton.tsx  # Push-to-talk + auto-speak
-│       │   └── WelcomeView.tsx  # Onboarding screen
-│       ├── hooks/               # Custom React hooks
-│       │   ├── useIPC.ts        # IPC communication hook
-│       │   ├── useEdgeTTS.ts    # Edge-TTS voice synthesis
-│       │   └── useOrb.ts        # Orb state machine (trace → orb state)
-│       ├── store/               # State management
-│       │   └── index.ts
-│       ├── styles/              # CSS styles
-│       │   └── globals.css      # Design tokens, keyframes, glass utilities
-│       ├── types/               # TypeScript types
-│       │   └── index.ts
-│       └── utils/               # Utility functions
-├── .claude/
-│   └── skills/                  # Default Skill Definitions
-│       ├── pptx/                # PowerPoint generation
-│       ├── docx/                # Word document processing
-│       ├── pdf/                 # PDF handling & forms
-│       ├── xlsx/                # Excel spreadsheet support
-│       └── skill-creator/       # Skill development toolkit
-├── resources/                   # Static Assets (icons, images)
-├── electron-builder.yml         # Build configuration
-├── vite.config.ts               # Vite bundler config
-└── package.json                 # Dependencies & scripts
-```
+| Level | Platform | How |
+|---|---|---|
+| Basic | All | Path guard — files restricted to workspace |
+| Enhanced | Windows | WSL2 VM — all commands run in isolated Linux |
+| Enhanced | macOS | Lima VM — all commands run in isolated Linux |
 
 ---
 
-## 🗺️ Roadmap
+## FAQ
 
-See our full **[ROADMAP.md](ROADMAP.md)** for detailed plans.
+**Is this free?**
+Yes. MIT licensed. You only pay for your AI model's API usage.
 
-**Completed:** Core installers · Filesystem sandboxing · VM isolation (WSL2/Lima) · Skills (PPTX/DOCX/PDF/XLSX) · MCP connectors · Multi-model support · Rich input · i18n
+**Does it work on Linux?**
+Not with a pre-built installer yet. Build from source works.
 
-**Coming next:** Memory optimization · Linux support · Plugin system · Computer use · Stable release
-
----
-
-## ❓ FAQ
-
-**What is Necter?**
-Necter is a free, open-source desktop application that provides a local AI agent workspace. It wraps AI models (Claude, GPT, Gemini, DeepSeek, etc.) into a GUI with one-click installers for Windows and macOS — no terminal or coding knowledge required.
-
-**How is Necter different from Claude Cowork?**
-Necter is the open-source implementation of Claude Cowork. It adds multi-model support (not just Claude), GUI automation via computer use, remote control through Feishu/Slack, and VM-level sandbox isolation. See the [feature comparison table](#features) for details.
-
-**What AI models does Necter support?**
-Claude (via Anthropic or OpenRouter), OpenAI-compatible APIs, and Chinese models including GLM (Zhipu AI), MiniMax, and Kimi. Any provider offering an OpenAI-compatible API endpoint can be configured.
-
-**Is Necter free?**
-Yes. Necter itself is completely free and open-source under the MIT license. You only need to pay for the AI model API usage from your chosen provider.
-
-**Does Necter work on Linux?**
-Currently, Necter provides pre-built installers for Windows and macOS only. Linux users can build from source — see the [Build from Source](#installation) section.
-
-**How does sandbox isolation work?**
-Necter offers multi-level protection: basic path-based restrictions on all platforms, and enhanced VM-level isolation using WSL2 (Windows) or Lima (macOS). When a VM is available, all commands execute inside an isolated Linux environment, protecting your host system.
-
-**What are Skills and how do I create custom ones?**
-Skills are built-in workflows for specific tasks like generating PPTX, DOCX, PDF, or XLSX files. Necter ships with default skills under `.claude/skills/` and includes a `skill-creator` tool to help you build your own custom skills.
-
-**What is MCP and how does it work?**
-MCP (Model Context Protocol) lets AI connect to external tools and services. Necter supports MCP connectors for browsers, Notion, and other desktop apps — extending the AI's capabilities beyond just file management and code.
-
-**How do I set up remote control via Feishu or Slack?**
-Necter supports remote control through Feishu (Lark) and Slack integration, allowing you to send commands and receive results from collaboration platforms. Check the app settings for remote control configuration.
-
-**Is my data safe? Does Necter send data to external servers?**
-Necter runs locally on your machine. Your files stay in your workspace. The only external communication is with the AI model API you configure (e.g., Anthropic, OpenRouter). No data is sent to Necter servers.
+**Is my data safe?**
+Your files stay in your chosen workspace folder. The only external traffic is to your AI provider's API.
 
 ---
 
-## 🛠️ Contributing
+## License
 
-We welcome contributions! Whether it's a new Skill, a UI fix, or a security improvement:
-
-1. Fork the repo.
-2. Create a branch (`git checkout -b feature/NewSkill`).
-3. Submit a PR.
-
----
-
-## 💬 Community
-
-Join our community for support and discussion:
-
-- **Discord**: [Join our Discord server](https://discord.gg/pynjtQDf) — for real-time chat, support, and development discussion.
-- **WeChat**: Scan the QR code below to join our WeChat group (Chinese community).
-
-<p align="center">
-  <img src="resources/WeChat.jpg" alt="WeChat Group" width="200" />
-</p>
-
----
-
-## 📄 License
-
-MIT © Necter Team
-
----
-
-<p align="center">
-  Made with ❤️ by the Necter Team with the help of opus4.5
-</p>
+MIT — see [LICENSE](LICENSE)
