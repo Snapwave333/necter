@@ -3,7 +3,6 @@ import { useTranslation } from 'react-i18next';
 import { Volume2, VolumeX, Mic, MicOff, Play } from 'lucide-react';
 import { useAppStore } from '../../store';
 import { useEdgeTTS } from '../../hooks/useEdgeTTS';
-import { useKokoro } from '../../hooks/useKokoro';
 
 const EDGE_VOICES = [
   { value: 'en-US-AriaNeural', label: 'Aria (US) — warm, professional' },
@@ -14,17 +13,6 @@ const EDGE_VOICES = [
   { value: 'en-AU-NatashaNeural', label: 'Natasha (AU) — clear' },
 ];
 
-const KOKORO_VOICES = [
-  { value: 'af_heart', label: 'af_heart — warm female' },
-  { value: 'af_bella', label: 'af_bella — bright female' },
-  { value: 'af_nicole', label: 'af_nicole — friendly female' },
-  { value: 'af_sarah', label: 'af_sarah — clear female' },
-  { value: 'am_adam', label: 'am_adam — calm male' },
-  { value: 'am_michael', label: 'am_michael — steady male' },
-  { value: 'bf_emma', label: 'bf_emma — british female' },
-  { value: 'bm_george', label: 'bm_george — british male' },
-];
-
 const TEST_PHRASE = 'Hello! This is a test of the voice settings. How does this sound?';
 
 export function SettingsVoice() {
@@ -33,99 +21,47 @@ export function SettingsVoice() {
   const updateSettings = useAppStore((s) => s.updateSettings);
 
   const { speak: speakEdge, status: edgeStatus, stop: stopEdge } = useEdgeTTS();
-  const { speak: speakKokoro, status: kokoroStatus, stop: stopKokoro } = useKokoro();
 
   const [testing, setTesting] = useState(false);
 
   const handleTestSpeak = useCallback(async () => {
     if (testing) return;
     setTesting(true);
-    // Stop any current speech
     stopEdge();
-    stopKokoro();
 
     try {
-      if (settings.ttsEngine === 'edge') {
-        await speakEdge(TEST_PHRASE, settings.edgeVoice);
-      } else {
-        await speakKokoro(TEST_PHRASE, settings.kokoroVoice);
-      }
+      await speakEdge(TEST_PHRASE, settings.edgeVoice);
     } finally {
       setTesting(false);
     }
-  }, [testing, settings.ttsEngine, settings.edgeVoice, settings.kokoroVoice, speakEdge, speakKokoro, stopEdge, stopKokoro]);
+  }, [testing, settings.edgeVoice, speakEdge, stopEdge]);
 
   const handleStopTest = useCallback(() => {
     stopEdge();
-    stopKokoro();
     setTesting(false);
-  }, [stopEdge, stopKokoro]);
+  }, [stopEdge]);
 
   return (
     <div className="space-y-8">
-      {/* TTS Engine Toggle */}
+      {/* Voice Picker */}
       <div className="space-y-3">
-        <h4 className="text-sm font-medium text-text-primary">{t('voice.ttsEngine')}</h4>
-        <div className="flex gap-2">
-          {(['edge', 'kokoro'] as const).map((engine) => (
+        <h4 className="text-sm font-medium text-text-primary">{t('voice.voice')}</h4>
+        <div className="grid grid-cols-1 gap-2">
+          {EDGE_VOICES.map((v) => (
             <button
-              key={engine}
-              onClick={() => updateSettings({ ttsEngine: engine })}
-              className={`flex-1 px-4 py-3 rounded-lg border-2 text-sm font-medium transition-all ${
-                settings.ttsEngine === engine
+              key={v.value}
+              onClick={() => updateSettings({ edgeVoice: v.value })}
+              className={`w-full text-left px-4 py-3 rounded-lg border-2 text-sm transition-all ${
+                settings.edgeVoice === v.value
                   ? 'border-accent bg-accent/5 text-text-primary'
                   : 'border-border bg-surface hover:border-accent/50 text-text-secondary'
               }`}
             >
-              {engine === 'edge' ? 'Edge TTS' : 'Kokoro (Local)'}
+              <span className="font-medium">{v.label.split(' — ')[0]}</span>
+              <span className="ml-2 text-text-muted">— {v.label.split(' — ')[1]}</span>
             </button>
           ))}
         </div>
-        <p className="text-xs text-text-muted">
-          {settings.ttsEngine === 'edge'
-            ? 'Microsoft Edge TTS — high quality, requires internet.'
-            : 'Kokoro-82M — runs locally via WebAssembly, no internet needed.'}
-        </p>
-      </div>
-
-      {/* Voice Picker */}
-      <div className="space-y-3">
-        <h4 className="text-sm font-medium text-text-primary">{t('voice.voice')}</h4>
-        {settings.ttsEngine === 'edge' ? (
-          <div className="grid grid-cols-1 gap-2">
-            {EDGE_VOICES.map((v) => (
-              <button
-                key={v.value}
-                onClick={() => updateSettings({ edgeVoice: v.value })}
-                className={`w-full text-left px-4 py-3 rounded-lg border-2 text-sm transition-all ${
-                  settings.edgeVoice === v.value
-                    ? 'border-accent bg-accent/5 text-text-primary'
-                    : 'border-border bg-surface hover:border-accent/50 text-text-secondary'
-                }`}
-              >
-                <span className="font-medium">{v.label.split(' — ')[0]}</span>
-                <span className="ml-2 text-text-muted">— {v.label.split(' — ')[1]}</span>
-              </button>
-            ))}
-          </div>
-        ) : (
-          <div className="grid grid-cols-1 gap-2">
-            {KOKORO_VOICES.map((v) => (
-              <button
-                key={v.value}
-                onClick={() => updateSettings({ kokoroVoice: v.value })}
-                className={`w-full text-left px-4 py-3 rounded-lg border-2 text-sm transition-all ${
-                  settings.kokoroVoice === v.value
-                    ? 'border-accent bg-accent/5 text-text-primary'
-                    : 'border-border bg-surface hover:border-accent/50 text-text-secondary'
-                }`}
-              >
-                <span className="font-medium">{v.label.split(' — ')[0]}</span>
-                <span className="ml-2 text-text-muted">— {v.label.split(' — ')[1]}</span>
-              </button>
-            ))}
-          </div>
-        )}
       </div>
 
       {/* Test Speak */}
@@ -152,11 +88,7 @@ export function SettingsVoice() {
           )}
         </button>
         {testing && (
-          <p className="text-xs text-text-muted">
-            {settings.ttsEngine === 'edge'
-              ? 'Speaking via Edge TTS...'
-              : 'Speaking via Kokoro (first load may take a moment)...'}
-          </p>
+          <p className="text-xs text-text-muted">Speaking via Edge TTS...</p>
         )}
       </div>
 
