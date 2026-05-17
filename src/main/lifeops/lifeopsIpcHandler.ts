@@ -9,7 +9,7 @@ import { ObsidianAdapter } from './adapters/ObsidianAdapter'
 import { LifeOpsPermissionGate } from './permission/LifeOpsPermissionGate'
 import { AuditLog } from './audit/AuditLog'
 import { approvalQueue } from './Phase2/ApprovalQueue'
-import { BriefingConfig, LifeItem, ApprovalRequest, PermissionLevel } from './models'
+import { BriefingConfig, ApprovalRequest, PermissionLevel } from './models'
 import { configStore } from '../config/config-store'
 import { MorningBriefingAgent } from './Phase4/MorningBriefingAgent'
 import { BriefingScheduler } from './Phase4/BriefingScheduler'
@@ -481,6 +481,139 @@ export function registerLifeOpsIpcHandlers(): void {
       nextRun: briefingScheduler.getNextRun()?.toISOString() ?? null,
       isScheduled: briefingScheduler.isScheduled(),
     }
+  })
+
+  // ── Weekly Review (Phase 5) ─────────────────────────────────────────────────
+
+  ipcMain.handle('lifeops:review.generate', async (_, { userLevel }: { userLevel: number }) => {
+    requirePermission(userLevel, 0, 'review.generate')
+    try {
+      const rawConfig = (configStore as unknown as { get(key: string): unknown }).get('lifeops.briefingConfig')
+      const briefingConfig: BriefingConfig | undefined = typeof rawConfig === 'object' && rawConfig !== null
+        ? (rawConfig as BriefingConfig)
+        : undefined
+
+      const agent = new WeeklyReviewAgent(briefingConfig!)
+      const review = await agent.run()
+
+      audit.log({
+        toolId: 'review.generate',
+        source: 'gmail',
+        input: { weekOf: review.weekOf },
+        permissionLevel: userLevel as PermissionLevel,
+        approved: true,
+        result: { weekOf: review.weekOf, suggestions: review.suggestions.length },
+      })
+      return review
+    } catch (err) {
+      audit.log({
+        toolId: 'review.generate',
+        source: 'gmail',
+        input: {},
+        permissionLevel: userLevel as PermissionLevel,
+        approved: true,
+        error: String(err),
+      })
+      throw err
+    }
+  })
+
+  // ── Routine Scheduler (Phase 5) ────────────────────────────────────────────
+
+  ipcMain.handle('lifeops:routines.list', async () => {
+    return routineScheduler.getRoutines()
+  })
+
+  ipcMain.handle('lifeops:routines.add', async (_, { routine }: { routine: Parameters<typeof routineScheduler.addRoutine>[0] }) => {
+    routineScheduler.addRoutine(routine)
+    return { ok: true }
+  })
+
+  ipcMain.handle('lifeops:routines.remove', async (_, { id }: { id: string }) => {
+    routineScheduler.removeRoutine(id)
+    return { ok: true }
+  })
+
+  ipcMain.handle('lifeops:routines.syncToCalendar', async (_, { userLevel }: { userLevel: number }) => {
+    requirePermission(userLevel, 2, 'routines.syncToCalendar')
+    try {
+      const result = await routineScheduler.syncToCalendar()
+      audit.log({
+        toolId: 'routines.syncToCalendar',
+        source: 'calendar',
+        input: {},
+        permissionLevel: userLevel as PermissionLevel,
+        approved: true,
+        result,
+      })
+      return result
+    } catch (err) {
+      audit.log({
+        toolId: 'routines.syncToCalendar',
+        source: 'calendar',
+        input: {},
+        permissionLevel: userLevel as PermissionLevel,
+        approved: true,
+        error: String(err),
+      })
+      throw err
+    }
+  })
+
+  // ── OAuth2 URL generation ───────────────────────────────────────────────────
+
+  ipcMain.handle('lifeops:oauth.getUrl', async (_, { service }: { service: 'gmail' | 'calendar' | 'tasks' }) => {
+    const CLIENT_ID_KEY = `lifeops.${service}.clientId`
+    const clientId = (configStore as unknown as { get(key: string): unknown }).get(CLIENT_ID_KEY) as string | undefined
+    if (!clientId) {
+      throw new Error(`OAuth2 not configured for ${service}. Set the client ID in Settings > LifeOps Connectors.`)
+    }
+    const redirectUri = 'http://localhost:3847/oauth/callback'
+    const scopes: Record<string, string[]> = {
+      gmail: ['https://www.googleapis.com/auth/gmail.readonly', 'https://www.googleapis.com/auth/gmail.send'],
+      calendar: ['https://www.googleapis.com/auth/calendar.readonly', 'https://www.googleapis.com/auth/calendar.events'],
+      tasks: ['https://www.googleapis.com/auth/tasks.readonly', 'https://www.googleapis.com/auth/tasks'],
+    }
+    const scopeStr = scopes[service].join(' ')
+    const state = `${service}:${Date.now()}`
+    const url = `https://accounts.google.com/o/oauth2/v2/auth?client_id=${encodeURIComponent(clientId)}&redirect_uri=${encodeURIComponent(redirectUri)}&response_type=code&scope=${encodeURIComponent(scopeStr)}&access_type=offline&prompt=consent&state=${encodeURIComponent(state)}`
+    return { url, state }
+  })
+
+  ipcMain.handle('lifeops:oauth.handleCallback', async (_, { code, service }: { code: string; service: 'gmail' | 'calendar' | 'tasks' }) => {
+    const CLIENT_ID_KEY = `lifeops.${service}.clientId`
+    const CLIENT_SECRET_KEY = `lifeops.${service}.clientSecret`
+    const clientId = (configStore as unknown as { get(key: string): unknown }).get(CLIENT_ID_KEY) as string | undefined
+    const clientSecret = (configStore as unknown as { get(key: string): unknown }).get(CLIENT_SECRET_KEY) as string | undefined
+    if (!clientId || !clientSecret) {
+      throw new Error(`OAuth2 not configured for ${service}. Set client ID and secret in Settings > LifeOps Connectors.`)
+    }
+    const redirectUri = 'http://localhost:3847/oauth/callback'
+    const res = await fetch('https://oauth2.googleapis.com/token', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        code,
+        client_id: clientId,
+        client_secret: clientSecret,
+        redirect_uri: redirectUri,
+        grant_type: 'authorization_code',
+      }),
+    })
+    if (!res.ok) {
+      const err = await res.text()
+      throw new Error(`Token exchange failed: ${err}`)
+    }
+    const tokens = await res.json() as { access_token: string; refresh_token: string; expires_in: number }
+    ;(configStore as unknown as { set(key: string, value: unknown): void }).set(`lifeops.${service}.accessToken` as any, tokens.access_token)
+    ;(configStore as unknown as { set(key: string, value: unknown): void }).set(`lifeops.${service}.refreshToken` as any, tokens.refresh_token)
+    ;(configStore as unknown as { set(key: string, value: unknown): void }).set(`lifeops.${service}.tokenExpiry` as any, Date.now() + tokens.expires_in * 1000)
+    return { ok: true }
+  })
+
+  ipcMain.handle('lifeops:oauth.getStatus', async (_, { service }: { service: 'gmail' | 'calendar' | 'tasks' }) => {
+    const accessToken = (configStore as unknown as { get(key: string): unknown }).get(`lifeops.${service}.accessToken` as any) as string | undefined
+    return { connected: !!accessToken }
   })
 
   console.log('[LifeOps] IPC handlers registered (Phase 2+3+4+5)')
