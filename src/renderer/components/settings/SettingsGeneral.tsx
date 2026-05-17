@@ -6,7 +6,8 @@ export function SettingsGeneral() {
   const { i18n, t } = useTranslation();
   const settings = useAppStore((s) => s.settings);
   const updateSettings = useAppStore((s) => s.updateSettings);
-  const currentLang = i18n.language.startsWith('zh') ? 'zh' : 'en';
+  // Match the detected language against our supported codes (supports 'en-US' → 'en', etc.)
+  const currentLang = languages.find((l) => i18n.language.startsWith(l.code))?.code ?? 'en';
   const [appVer, setAppVer] = useState('');
   useEffect(() => {
     try {
@@ -21,6 +22,20 @@ export function SettingsGeneral() {
   const languages = [
     { code: 'en', nativeName: 'English' },
     { code: 'zh', nativeName: '中文' },
+    { code: 'es', nativeName: 'Español' },
+    { code: 'fr', nativeName: 'Français' },
+    { code: 'de', nativeName: 'Deutsch' },
+    { code: 'ja', nativeName: '日本語' },
+    { code: 'ko', nativeName: '한국어' },
+    { code: 'pt', nativeName: 'Português' },
+    { code: 'ru', nativeName: 'Русский' },
+    { code: 'ar', nativeName: 'العربية' },
+    { code: 'hi', nativeName: 'हिन्दी' },
+    { code: 'it', nativeName: 'Italiano' },
+    { code: 'nl', nativeName: 'Nederlands' },
+    { code: 'pl', nativeName: 'Polski' },
+    { code: 'tr', nativeName: 'Türkçe' },
+    { code: 'vi', nativeName: 'Tiếng Việt' },
   ];
 
   const themeOptions = [
