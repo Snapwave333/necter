@@ -2959,3 +2959,7 @@ ipcMain.handle(
     }
   }
 );
+
+// ── LifeOps ─────────────────────────────────────────────────────────────────
+import { registerLifeOpsIpcHandlers } from './lifeops/lifeopsIpcHandler';
+registerLifeOpsIpcHandlers();

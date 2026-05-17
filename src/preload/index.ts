@@ -446,6 +446,73 @@ contextBridge.exposeInMainWorld('electronAPI', {
         speak: (text: string, voice?: string): Promise<ArrayBuffer> =>
           ipcRenderer.invoke('voice.speak', text, voice),
       },
+
+  // LifeOps — Gmail, Calendar, Tasks, Obsidian adapters
+  lifeops: {
+    gmail: {
+      listMessages: (query: string, maxResults: number, userLevel: number) =>
+        ipcRenderer.invoke('lifeops:gmail.listMessages', { query, maxResults, userLevel }),
+      getMessage: (messageId: string, userLevel: number) =>
+        ipcRenderer.invoke('lifeops:gmail.getMessage', { messageId, userLevel }),
+      searchMessages: (query: string, maxResults: number, userLevel: number) =>
+        ipcRenderer.invoke('lifeops:gmail.searchMessages', { query, maxResults, userLevel }),
+      listLabels: (userLevel: number) =>
+        ipcRenderer.invoke('lifeops:gmail.listLabels', { userLevel }),
+    },
+    calendar: {
+      listEvents: (timeMin: string, timeMax: string, calendarId: string, maxResults: number, userLevel: number) =>
+        ipcRenderer.invoke('lifeops:calendar.listEvents', { timeMin, timeMax, calendarId, maxResults, userLevel }),
+      getEvent: (eventId: string, calendarId: string, userLevel: number) =>
+        ipcRenderer.invoke('lifeops:calendar.getEvent', { eventId, calendarId, userLevel }),
+      listCalendars: (userLevel: number) =>
+        ipcRenderer.invoke('lifeops:calendar.listCalendars', { userLevel }),
+      listFreeBusy: (timeMin: string, timeMax: string, calendarIds: string[], userLevel: number) =>
+        ipcRenderer.invoke('lifeops:calendar.listFreeBusy', { timeMin, timeMax, calendarIds, userLevel }),
+    },
+    tasks: {
+      listTaskLists: (userLevel: number) =>
+        ipcRenderer.invoke('lifeops:tasks.listTaskLists', { userLevel }),
+      listTasks: (taskListId: string, userLevel: number) =>
+        ipcRenderer.invoke('lifeops:tasks.listTasks', { taskListId, userLevel }),
+      getTask: (taskId: string, taskListId: string, userLevel: number) =>
+        ipcRenderer.invoke('lifeops:tasks.getTask', { taskId, taskListId, userLevel }),
+      getOverdueTasks: (taskListId: string, userLevel: number) =>
+        ipcRenderer.invoke('lifeops:tasks.getOverdueTasks', { taskListId, userLevel }),
+      getTasksDueToday: (taskListId: string, userLevel: number) =>
+        ipcRenderer.invoke('lifeops:tasks.getTasksDueToday', { taskListId, userLevel }),
+    },
+    obsidian: {
+      searchNotes: (query: string, userLevel: number) =>
+        ipcRenderer.invoke('lifeops:obsidian.searchNotes', { query, userLevel }),
+      readNote: (vaultPath: string, userLevel: number) =>
+        ipcRenderer.invoke('lifeops:obsidian.readNote', { vaultPath, userLevel }),
+      readDailyNote: (date: string, userLevel: number) =>
+        ipcRenderer.invoke('lifeops:obsidian.readDailyNote', { date, userLevel }),
+      appendToDailyNote: (date: string, content: string, userLevel: number) =>
+        ipcRenderer.invoke('lifeops:obsidian.appendToDailyNote', { date, content, userLevel }),
+      setVaultPath: (vaultPath: string, userLevel: number) =>
+        ipcRenderer.invoke('lifeops:obsidian.setVaultPath', { vaultPath, userLevel }),
+    },
+    approval: {
+      request: (request: {
+        toolId: string
+        action: string
+        params: Record<string, unknown>
+        riskLevel: number
+        suggestedSummary: string
+      }) => ipcRenderer.invoke('lifeops:approval.request', { request }),
+      list: () => ipcRenderer.invoke('lifeops:approval.list'),
+      approve: (id: string, approverNote?: string) =>
+        ipcRenderer.invoke('lifeops:approval.approve', { id, approverNote }),
+      reject: (id: string, reason?: string) =>
+        ipcRenderer.invoke('lifeops:approval.reject', { id, reason }),
+    },
+    audit: {
+      recent: (limit?: number) => ipcRenderer.invoke('lifeops:audit.recent', { limit }),
+      range: (startISO: string, endISO: string) =>
+        ipcRenderer.invoke('lifeops:audit.range', { startISO, endISO }),
+    },
+  },
 });
 
 // Type declaration for the renderer process
@@ -685,6 +752,50 @@ declare global {
       voice: {
         transcribe: (audioBuffer: ArrayBuffer, mimeType: string) => Promise<string>;
         speak: (text: string) => Promise<ArrayBuffer>;
+      };
+      lifeops: {
+        gmail: {
+          listMessages: (query: string, maxResults: number, userLevel: number) => Promise<unknown>;
+          getMessage: (messageId: string, userLevel: number) => Promise<unknown>;
+          searchMessages: (query: string, maxResults: number, userLevel: number) => Promise<unknown>;
+          listLabels: (userLevel: number) => Promise<unknown>;
+        };
+        calendar: {
+          listEvents: (timeMin: string, timeMax: string, calendarId: string, maxResults: number, userLevel: number) => Promise<unknown>;
+          getEvent: (eventId: string, calendarId: string, userLevel: number) => Promise<unknown>;
+          listCalendars: (userLevel: number) => Promise<unknown>;
+          listFreeBusy: (timeMin: string, timeMax: string, calendarIds: string[], userLevel: number) => Promise<unknown>;
+        };
+        tasks: {
+          listTaskLists: (userLevel: number) => Promise<unknown>;
+          listTasks: (taskListId: string, userLevel: number) => Promise<unknown>;
+          getTask: (taskId: string, taskListId: string, userLevel: number) => Promise<unknown>;
+          getOverdueTasks: (taskListId: string, userLevel: number) => Promise<unknown>;
+          getTasksDueToday: (taskListId: string, userLevel: number) => Promise<unknown>;
+        };
+        obsidian: {
+          searchNotes: (query: string, userLevel: number) => Promise<unknown>;
+          readNote: (vaultPath: string, userLevel: number) => Promise<unknown>;
+          readDailyNote: (date: string, userLevel: number) => Promise<unknown>;
+          appendToDailyNote: (date: string, content: string, userLevel: number) => Promise<unknown>;
+          setVaultPath: (vaultPath: string, userLevel: number) => Promise<unknown>;
+        };
+        approval: {
+          request: (request: {
+            toolId: string;
+            action: string;
+            params: Record<string, unknown>;
+            riskLevel: number;
+            suggestedSummary: string;
+          }) => Promise<unknown>;
+          list: () => Promise<unknown[]>;
+          approve: (id: string, approverNote?: string) => Promise<unknown>;
+          reject: (id: string, reason?: string) => Promise<unknown>;
+        };
+        audit: {
+          recent: (limit?: number) => Promise<unknown[]>;
+          range: (startISO: string, endISO: string) => Promise<unknown[]>;
+        };
       };
     };
   }
