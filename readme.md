@@ -1,7 +1,7 @@
 # Necter
 
 <p align="center">
-  <img src="https://github.com/Snapwave333/necter/raw/main/resources/necter-banner.png" alt="Necter" width="480" />
+  <img src="https://github.com/Snapwave333/necter/raw/main/resources/necter-banner.png" alt="Necter" width="640" />
 </p>
 
 <p align="center">
